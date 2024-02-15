@@ -1,12 +1,11 @@
 app:
-  telegram-token: unset
+  telegram-token: ${TELEGRAM_API_KEY}
 
 spring:
   application:
     name: bot
   jackson:
     time-zone: UTC
-
 server:
   port: 8090
 
