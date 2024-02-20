@@ -1,10 +1,10 @@
-package edu.java.bot.command;
-
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import edu.java.bot.command.HelpCommand;
 import edu.java.bot.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
