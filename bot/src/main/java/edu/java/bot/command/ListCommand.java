@@ -5,54 +5,67 @@ import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.model.Link;
 import edu.java.bot.model.User;
-import edu.java.bot.repository.TempRepository;
+
+import edu.java.bot.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class ListCommand implements Command {
 
-    private final TempRepository repository;
+    private static final String COMMAND = "/list";
+    private static final String DESCRIPTION = "Show all tracked links";
+    private static final String MESSAGE_TO_REGISTER = "Please, register! Use command */start*.";
+    private static final String MESSAGE_ABOUT_TRACKED_LINKS = "*Tracked Links*:\n";
+    private static final String MESSAGE_ABOUT_NO_TRACKED_LINKS = """
+        Ops... There are no tracked links.
+        You can add them using */track* command.
+        """;
+
+    private final UserService userService;
+
+    private String getListOfTrackedLinks(long chatId) {
+        Optional<User> user = userService.findByChatId(chatId);
+        if (user.isPresent()) {
+            List<Link> listOfLinks = user.get().getLinks();
+            if (listOfLinks.isEmpty()) {
+                return MESSAGE_ABOUT_NO_TRACKED_LINKS;
+            }
+            String trackedUrls = user.get().getLinks().stream()
+                .map(Link::getUrl)
+                .reduce("", (url1, url2) -> url1 + "\n" + url2);
+            return MESSAGE_ABOUT_TRACKED_LINKS + trackedUrls;
+        }
+        return MESSAGE_TO_REGISTER;
+    }
+
 
     @Override
     public String command() {
-        return "/list";
+        return COMMAND;
     }
 
     @Override
     public String description() {
-        return "Show all tracked links";
+        return DESCRIPTION;
+    }
+
+    @Override
+    public boolean supports(Update update) {
+        Optional<User> user = userService.findByChatId(update.message().chat().id());
+
+        return update.message().text().equals(command())
+               && user.isPresent();
+
     }
 
     @Override
     public SendMessage handle(Update update) {
         long chatId = update.message().chat().id();
-        if (repository.findByChatId(chatId).isEmpty()) {
-            String sendMessageText = "Please, register! Use command */start*.";
-            return new SendMessage(chatId, sendMessageText)
-                .parseMode(ParseMode.Markdown);
-        }
-        User user = repository.findByChatId(chatId).get();
-        // System.out.println(user.getLinks().get(0));
-        if (user.getLinks().isEmpty()) {
-            String sendMessageText =
-                """
-                Ops... There are no tracked links.
-                You can add them using */track* command.
-                """;
-            return new SendMessage(chatId, sendMessageText)
-                .parseMode(ParseMode.Markdown);
-        } else {
-            String trackedUrls = repository.getLinks(chatId).stream()
-                .map(Link::getUrl)
-                .reduce("", (url1, url2) -> url1 + "\n" + url2);
-            String sendMessageText =
-                """
-                *Tracked Links*:
-                """;
-            return new SendMessage(chatId, sendMessageText + trackedUrls)
-                .parseMode(ParseMode.Markdown);
-        }
+        String message = getListOfTrackedLinks(chatId);
+        return new SendMessage(chatId, message).parseMode(ParseMode.Markdown);
     }
 }

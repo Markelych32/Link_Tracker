@@ -6,65 +6,66 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.model.Link;
 import edu.java.bot.model.User;
 import edu.java.bot.model.UserState;
-import edu.java.bot.repository.TempRepository;
+import edu.java.bot.service.LinkService;
+import edu.java.bot.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class TrackCommand implements Command {
 
-    private final TempRepository repository;
+    private final UserService userService;
+    private final LinkService linkService;
+
+    private static final String COMMAND = "/track";
+    private static final String DESCRIPTION = "Start track the link";
+    private static final String MESSAGE_TO_GET_LINK_TO_TRACK = "Please, enter the* link *you want to track.";
+    private static final String MESSAGE_LINK_IS_BEING_TRACKED_NOW = "The Link is now being tracked.";
+    private static final String MESSAGE_LINK_WAS_ALREADY_TRACKED = "Sorry, the link was already tracked.";
 
     @Override
     public String command() {
-        return "/track";
+        return COMMAND;
     }
 
     @Override
     public String description() {
-        return "Start track the link";
+        return DESCRIPTION;
     }
 
     @Override
     public boolean supports(Update update) {
-        if (update.message().text().equals(command())) {
-            return true;
-        }
-        Long chatId = update.message().chat().id();
-        return repository.findByChatId(chatId).isPresent()
-               && repository.findByChatId(chatId).get().getState() == UserState.TRACK;
+        long chatId = update.message().chat().id();
+        Optional<User> user = userService.findByChatId(chatId);
+        return user.isPresent()
+               && (user.get().getState() == UserState.TRACK || update.message().text().equals(command()));
     }
-
     @Override
     public SendMessage handle(Update update) {
-        String originalMessage = update.message().text();
-        Long chatId = update.message().chat().id();
-        if (repository.findByChatId(chatId).isEmpty()) {
-            String sendMessageText = "Please, register! Use command */start*.";
-            return new SendMessage(chatId, sendMessageText);
+        String message = update.message().text();
+        long chatId = update.message().chat().id();
+        User user = userService.findByChatId(chatId).get();
+
+        if (user.getState() != UserState.TRACK) {
+            userService.save(user, UserState.TRACK);
+            return new SendMessage(chatId, MESSAGE_TO_GET_LINK_TO_TRACK).parseMode(ParseMode.Markdown);
         }
-        User user = repository.findByChatId(chatId).get();
-        if (user.getState() == UserState.TRACK) {
-            if (repository.findByUrl(chatId, originalMessage).isEmpty()) {
-                Link link = new Link();
-                link.setUrl(originalMessage);
-                repository.saveLink(chatId, link);
-            }
-            Link link = repository.findByUrl(chatId, originalMessage).get();
-            user.setState(UserState.NEUTRAL);
-            repository.save(user);
-            repository.trackLink(user, link);
-            String sendMessageText = "The Link is now being tracked.";
-            return new SendMessage(chatId, sendMessageText);
-        } else {
-            user.setState(UserState.TRACK);
-            repository.save(user);
-            String sendMessageText =
-                """
-                    Please, enter the* link *you want to track.""";
-            return new SendMessage(chatId, sendMessageText)
-                .parseMode(ParseMode.Markdown);
+
+        if (linkService.findByUrl(message).isEmpty()) {
+            Link link = new Link();
+            linkService.save(link, message);
         }
+
+        Link link = linkService.findByUrl(message).get();
+        userService.save(user, UserState.NEUTRAL);
+
+        if (userService.wasLinkTracked(user, link)) {
+            return new SendMessage(chatId, MESSAGE_LINK_WAS_ALREADY_TRACKED);
+        }
+
+        userService.trackLink(user, link);
+        return new SendMessage(chatId, MESSAGE_LINK_IS_BEING_TRACKED_NOW).parseMode(ParseMode.Markdown);
     }
 }
