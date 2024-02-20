@@ -1,15 +1,14 @@
 package edu.java.bot.command;
 
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.model.Link;
 import edu.java.bot.model.User;
 import edu.java.bot.model.UserState;
-import java.util.Objects;
-import java.util.Optional;
 import edu.java.bot.service.LinkService;
 import edu.java.bot.service.UserService;
+import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -40,9 +39,9 @@ public class UntrackCommand implements Command {
     public boolean supports(Update update) {
         Long chatId = update.message().chat().id();
         Optional<User> user = userService.findByChatId(chatId);
-        return user.isPresent() &&
-               (update.message().text().equals(command()) && user.get().getState() == UserState.NEUTRAL ||
-                user.get().getState() == UserState.UNTRACK);
+        return user.isPresent()
+               && (update.message().text().equals(command()) && user.get().getState() == UserState.NEUTRAL
+                   || user.get().getState() == UserState.UNTRACK);
     }
 
     @Override
@@ -55,7 +54,6 @@ public class UntrackCommand implements Command {
             userService.save(user, UserState.UNTRACK);
             return new SendMessage(chatId, MESSAGE_NAME_LINK_TO_UNTRACK);
         }
-
 
         Optional<Link> link = linkService.findByUrl(message);
 

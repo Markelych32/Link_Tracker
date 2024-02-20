@@ -18,7 +18,8 @@ public class UserMessageProcessor {
         Please, enter a right command
         or choose from menu using */help* command.
         """;
-    private final List<Command> commands() {
+
+    private List<Command> commands() {
         return commands;
     }
 
@@ -27,6 +28,7 @@ public class UserMessageProcessor {
             .filter(command -> command.supports(update))
             .findFirst()
             .map(it -> it.handle(update))
-            .orElseGet(() -> new SendMessage(update.message().chat().id(), MESSAGE_NOT_CORRECT_COMMAND).parseMode(ParseMode.Markdown));
+            .orElseGet(() -> new SendMessage(update.message().chat().id(), MESSAGE_NOT_CORRECT_COMMAND)
+                .parseMode(ParseMode.Markdown));
     }
 }

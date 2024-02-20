@@ -6,9 +6,10 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.model.User;
 import edu.java.bot.model.UserState;
 import edu.java.bot.service.UserService;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import java.util.Optional;
+
 
 @Component
 @RequiredArgsConstructor

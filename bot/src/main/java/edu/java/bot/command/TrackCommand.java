@@ -8,9 +8,10 @@ import edu.java.bot.model.User;
 import edu.java.bot.model.UserState;
 import edu.java.bot.service.LinkService;
 import edu.java.bot.service.UserService;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import java.util.Optional;
+
 
 @Component
 @RequiredArgsConstructor
@@ -42,6 +43,7 @@ public class TrackCommand implements Command {
         return user.isPresent()
                && (user.get().getState() == UserState.TRACK || update.message().text().equals(command()));
     }
+
     @Override
     public SendMessage handle(Update update) {
         String message = update.message().text();

@@ -5,12 +5,12 @@ import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.model.Link;
 import edu.java.bot.model.User;
-
 import edu.java.bot.service.UserService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
 
 @Component
 @RequiredArgsConstructor
@@ -41,7 +41,6 @@ public class ListCommand implements Command {
         }
         return MESSAGE_TO_REGISTER;
     }
-
 
     @Override
     public String command() {
