@@ -1,7 +1,9 @@
+package edu.java.bot.command;
+
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
-import edu.java.bot.command.TrackCommand;
+import static org.mockito.Mockito.mock;
 import edu.java.bot.model.Link;
 import edu.java.bot.model.User;
 import edu.java.bot.model.UserState;
@@ -11,6 +13,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Optional;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -24,12 +27,13 @@ public class TrackCommandTest {
 
     @BeforeAll
     public static void mockInit() {
-        userService = Mockito.mock(UserService.class);
+        userService = mock(UserService.class);
         linkService = mock(LinkService.class);
-        update = Mockito.mock(Update.class);
-        message = Mockito.mock(Message.class);
-        chat = Mockito.mock(Chat.class);
+        update = mock(Update.class);
+        message = mock(Message.class);
+        chat = mock(Chat.class);
     }
+
     @Test
     public void notTrackedLinkShouldBeTracked() {
         TrackCommand trackCommand = new TrackCommand(userService, linkService);
