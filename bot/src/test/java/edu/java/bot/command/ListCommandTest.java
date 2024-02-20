@@ -3,16 +3,15 @@ package edu.java.bot.command;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
+import edu.java.bot.ListCommand;
 import edu.java.bot.model.Link;
 import edu.java.bot.model.User;
-import edu.java.bot.service.LinkService;
 import edu.java.bot.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import java.util.ArrayList;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +21,6 @@ public class ListCommandTest {
     private static Update update;
     private static Message message;
     private static Chat chat;
-    private static LinkService linkService;
 
     @BeforeAll
     public static void mockInit() {
@@ -30,7 +28,6 @@ public class ListCommandTest {
         update = Mockito.mock(Update.class);
         message = Mockito.mock(Message.class);
         chat = Mockito.mock(Chat.class);
-        linkService = mock(LinkService.class);
     }
 
     @Test

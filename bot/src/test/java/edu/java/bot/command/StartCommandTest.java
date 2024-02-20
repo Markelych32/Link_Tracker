@@ -3,10 +3,10 @@ package edu.java.bot.command;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
+import edu.java.bot.StartCommand;
 import edu.java.bot.model.User;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import edu.java.bot.service.LinkService;
 import edu.java.bot.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -16,7 +16,6 @@ import java.util.Optional;
 
 public class StartCommandTest {
     private static UserService userService;
-    private static LinkService linkService;
     private static Update update;
     private static Message message;
     private static Chat chat;
@@ -24,7 +23,6 @@ public class StartCommandTest {
     @BeforeAll
     public static void mockInit() {
         userService = mock(UserService.class);
-        linkService = mock(LinkService.class);
         update = mock(Update.class);
         message = mock(Message.class);
         chat = mock(Chat.class);
