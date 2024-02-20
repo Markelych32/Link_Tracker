@@ -3,7 +3,6 @@ package edu.java.bot.command;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
-import edu.java.bot.UntrackCommand;
 import edu.java.bot.model.Link;
 import edu.java.bot.model.User;
 import edu.java.bot.model.UserState;
