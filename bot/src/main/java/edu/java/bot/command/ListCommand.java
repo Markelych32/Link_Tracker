@@ -37,6 +37,7 @@ public class ListCommand implements Command {
         if (listOfLinks.isEmpty()) {
             return MESSAGE_ABOUT_NO_TRACKED_LINKS;
         }
+
         String trackedUrls = user.get().getLinks().stream()
             .map(Link::getUrl)
             .collect(Collectors.joining("\n"));
