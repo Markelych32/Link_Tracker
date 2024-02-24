@@ -41,7 +41,6 @@ public class ListCommand implements Command {
             .map(Link::getUrl)
             .collect(Collectors.joining("\n"));
         return MESSAGE_ABOUT_TRACKED_LINKS + trackedUrls;
-
     }
 
     @Override
