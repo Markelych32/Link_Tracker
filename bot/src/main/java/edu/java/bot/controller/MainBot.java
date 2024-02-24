@@ -9,6 +9,7 @@ import com.pengrad.telegrambot.request.SetMyCommands;
 import com.pengrad.telegrambot.response.BaseResponse;
 import edu.java.bot.command.Command;
 import edu.java.bot.configuration.ApplicationConfig;
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -26,13 +27,12 @@ public class MainBot implements AutoCloseable, UpdatesListener {
         telegramBot.execute(request);
     }
 
-
     public int process(List<Update> list) {
         list.forEach(update -> execute(messageProcessor.process(update)));
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
 
-
+    @PostConstruct
     public void start() {
         SetMyCommands setMyCommands = new SetMyCommands(
             commands.stream()
@@ -43,7 +43,6 @@ public class MainBot implements AutoCloseable, UpdatesListener {
         telegramBot.execute(setMyCommands);
         telegramBot.setUpdatesListener(this);
     }
-
 
     @PreDestroy
     public void close() {

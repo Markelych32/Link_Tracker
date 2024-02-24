@@ -5,6 +5,7 @@ import edu.java.bot.repository.LinkRepository;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class LinkService {
@@ -23,6 +24,7 @@ public class LinkService {
         linkRepository.save(link);
     }
 
+    @Transactional
     public void save(Link link, String url) {
         link.setUrl(url);
         save(link);

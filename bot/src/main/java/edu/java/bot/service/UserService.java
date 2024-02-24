@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
@@ -34,23 +35,27 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
     public void save(User user, UserState userState) {
         user.setState(userState);
         save(user);
     }
 
+    @Transactional
     public void save(User user, long chatId, UserState userState) {
         user.setChatId(chatId);
         user.setState(userState);
         save(user);
     }
 
+    @Transactional
     public void save(User user, String name, UserState userState) {
         user.setName(name);
         user.setState(userState);
         save(user);
     }
 
+    @Transactional
     public void trackLink(User user, Link link) {
         user.getLinks().add(link);
         link.getUsers().add(user);

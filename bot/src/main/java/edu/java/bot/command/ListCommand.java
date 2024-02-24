@@ -8,6 +8,7 @@ import edu.java.bot.model.User;
 import edu.java.bot.service.UserService;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +19,7 @@ public class ListCommand implements Command {
     private static final String COMMAND = "/list";
     private static final String DESCRIPTION = "Show all tracked links";
     private static final String MESSAGE_TO_REGISTER = "Please, register! Use command */start*.";
-    private static final String MESSAGE_ABOUT_TRACKED_LINKS = "*Tracked Links*:\n";
+    private static final String MESSAGE_ABOUT_TRACKED_LINKS = "*Tracked Links*:\n\n";
     private static final String MESSAGE_ABOUT_NO_TRACKED_LINKS = """
         Ops... There are no tracked links.
         You can add them using */track* command.
@@ -28,17 +29,19 @@ public class ListCommand implements Command {
 
     private String getListOfTrackedLinks(long chatId) {
         Optional<User> user = userService.findByChatId(chatId);
-        if (user.isPresent()) {
-            List<Link> listOfLinks = user.get().getLinks();
-            if (listOfLinks.isEmpty()) {
-                return MESSAGE_ABOUT_NO_TRACKED_LINKS;
-            }
-            String trackedUrls = user.get().getLinks().stream()
-                .map(Link::getUrl)
-                .reduce("", (url1, url2) -> url1 + "\n" + url2);
-            return MESSAGE_ABOUT_TRACKED_LINKS + trackedUrls;
+        if (user.isEmpty()) {
+            return MESSAGE_TO_REGISTER;
         }
-        return MESSAGE_TO_REGISTER;
+
+        List<Link> listOfLinks = user.get().getLinks();
+        if (listOfLinks.isEmpty()) {
+            return MESSAGE_ABOUT_NO_TRACKED_LINKS;
+        }
+        String trackedUrls = user.get().getLinks().stream()
+            .map(Link::getUrl)
+            .collect(Collectors.joining("\n"));
+        return MESSAGE_ABOUT_TRACKED_LINKS + trackedUrls;
+
     }
 
     @Override
