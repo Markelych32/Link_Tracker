@@ -59,7 +59,6 @@ public class ListCommand implements Command {
 
         return update.message().text().equals(command())
                && user.isPresent();
-
     }
 
     @Override
