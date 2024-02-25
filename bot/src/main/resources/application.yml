@@ -1,12 +1,19 @@
 app:
-  telegram-token: unset
+  telegram-token: ${TELEGRAM_API_KEY}
 
 spring:
   application:
     name: bot
   jackson:
     time-zone: UTC
-
+  datasource:
+    url: jdbc:postgresql://localhost:5432/tracker_change
+    username: postgres
+    password: solonchev32
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
 server:
   port: 8090
 
