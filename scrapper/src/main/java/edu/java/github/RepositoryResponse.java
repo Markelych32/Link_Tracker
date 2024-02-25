@@ -6,6 +6,6 @@ import java.time.OffsetDateTime;
 public record RepositoryResponse(
     @JsonProperty("id") String id,
     @JsonProperty("full_name") String fullName,
-    @JsonProperty("updated_at")OffsetDateTime updatedAt
-    ) {
+    @JsonProperty("updated_at") OffsetDateTime updatedAt
+) {
 }

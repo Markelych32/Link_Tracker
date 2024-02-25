@@ -6,7 +6,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import edu.java.stackOverflow.ItemResponse;
-import edu.java.stackOverflow.impl.StackOverflowClientImpl;
+import edu.java.stackOverflow.StackOverflowClient;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -39,8 +39,8 @@ public class StackOverflowClientTest {
 
     @Test
     void fetchQuestion() {
-        StackOverflowClientImpl stackOverflowClient =
-            new StackOverflowClientImpl(webClientBuilder, "http://localhost:8080");
+        StackOverflowClient stackOverflowClient =
+            new StackOverflowClient(webClientBuilder, "http://localhost:8080");
         String id = "21007680";
         stubFor(get(urlPathMatching(String.format("/questions/%s", id)))
             .willReturn(aResponse()

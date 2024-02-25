@@ -1,7 +1,7 @@
 package edu.java.clientConfiguration;
 
-import edu.java.github.impl.GithubClientImpl;
-import edu.java.stackOverflow.impl.StackOverflowClientImpl;
+import edu.java.github.GithubClient;
+import edu.java.stackOverflow.StackOverflowClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,12 +13,12 @@ public class ClientConfiguration {
     private final WebClient.Builder webClientBuilder;
 
     @Bean
-    public GithubClientImpl githubClient() {
-        return new GithubClientImpl(webClientBuilder);
+    public GithubClient githubClient() {
+        return new GithubClient(webClientBuilder);
     }
 
     @Bean
-    public StackOverflowClientImpl stackOverflowClient() {
-        return new StackOverflowClientImpl(webClientBuilder);
+    public StackOverflowClient stackOverflowClient() {
+        return new StackOverflowClient(webClientBuilder);
     }
 }

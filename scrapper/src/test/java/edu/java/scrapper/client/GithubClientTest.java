@@ -5,9 +5,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import edu.java.github.GithubClient;
 import edu.java.github.RepositoryResponse;
-import edu.java.github.impl.GithubClientImpl;
+import edu.java.github.GithubClient;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -41,7 +40,7 @@ public class GithubClientTest {
 
     @Test
     void fetchRepoTest() {
-        final GithubClient underTest = new GithubClientImpl(webClientBuilder, "http://localhost:8080");
+        final GithubClient underTest = new GithubClient(webClientBuilder, "http://localhost:8080");
         final String owner = "Markelych32";
         final String repo = "Book_REST_API";
         stubFor(get(urlPathMatching(String.format("/repos/%s/%s", owner, repo)))
