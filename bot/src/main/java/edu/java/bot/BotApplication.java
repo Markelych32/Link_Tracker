@@ -1,7 +1,6 @@
 package edu.java.bot;
 
 import edu.java.bot.configuration.ApplicationConfig;
-import edu.java.bot.processor.MainBot;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
