@@ -15,28 +15,15 @@ import java.util.List;
 @Slf4j
 public class BotExceptionApiHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiErrorResponse> notValidLinkUpdate(MethodArgumentNotValidException exception) {
+    @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentNotValidException.class})
+    public ResponseEntity<ApiErrorResponse> notIntId(Exception exception) {
         List<String> test = Arrays.stream(exception.getStackTrace()).map(StackTraceElement::toString).toList();
         return new ResponseEntity<>(
             ApiErrorResponse.builder()
-                .description("ID, URL & tgChatIds cant be empty")
-                .code("400")
-                .exceptionName("HttpMessageNotReadableException")
-                .exceptionMessage("ID, URL & tgChatIds cant be empty")
-                .stacktrace(test)
-                .build(), HttpStatusCode.valueOf(404)
-        );
-    }
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ApiErrorResponse> notIntId(HttpMessageNotReadableException exception) {
-        List<String> test = Arrays.stream(exception.getStackTrace()).map(StackTraceElement::toString).toList();
-        return new ResponseEntity<>(
-            ApiErrorResponse.builder()
-                .description("ID should be INT")
+                .description("Unadjusted request parameters")
                 .code("404")
-                .exceptionName("HttpMessageNotReadableException")
-                .exceptionMessage("ID should be INT")
+                .exceptionName("HttpMessageNotReadableException, MethodArgumentNotValidException")
+                .exceptionMessage("Unadjusted request parameters")
                 .stacktrace(test)
                 .build(), HttpStatusCode.valueOf(404)
         );
