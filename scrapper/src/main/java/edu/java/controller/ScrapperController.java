@@ -4,6 +4,8 @@ import edu.java.controller.dto.AddLinkRequest;
 import edu.java.controller.dto.LinkResponse;
 import edu.java.controller.dto.ListLinksResponse;
 import edu.java.controller.dto.RemoveLinkRequest;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +50,7 @@ public class ScrapperController {
     @PostMapping("/links")
     public ResponseEntity<LinkResponse> addLinks(
         @RequestHeader("Tg-Chat-Id") Long chatId,
-        @RequestBody AddLinkRequest addLinkRequest
+        @RequestBody @Valid AddLinkRequest addLinkRequest
     ) {
         log.info("Ссылка успешно добавлена");
         return new ResponseEntity<>(new LinkResponse(chatId, addLinkRequest.getUrl()), HttpStatus.OK);
