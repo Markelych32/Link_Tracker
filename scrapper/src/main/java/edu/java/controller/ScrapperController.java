@@ -4,8 +4,9 @@ import edu.java.controller.dto.AddLinkRequest;
 import edu.java.controller.dto.LinkResponse;
 import edu.java.controller.dto.ListLinksResponse;
 import edu.java.controller.dto.RemoveLinkRequest;
+import edu.java.service.ScrapperService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +21,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/scrapper-api/v1.0")
+@RequiredArgsConstructor
 @Slf4j
 public class ScrapperController {
+
+    private final ScrapperService service;
 
     @PostMapping("/tg-chat/{id}")
     public ResponseEntity<Void> registerChat(
         @PathVariable Long id
     ) {
+        service.saveChatById(id);
         log.info("Чат зарегистрирован");
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -35,6 +40,7 @@ public class ScrapperController {
     public ResponseEntity<Void> deleteChat(
         @PathVariable Long id
     ) {
+        service.deleteTgChatById(id);
         log.info("Чат успешно удален");
         return new ResponseEntity<>(HttpStatus.OK);
     }
