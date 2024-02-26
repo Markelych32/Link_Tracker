@@ -3,6 +3,7 @@ package edu.java.controller;
 import edu.java.controller.dto.AddLinkRequest;
 import edu.java.controller.dto.LinkResponse;
 import edu.java.controller.dto.ListLinksResponse;
+import edu.java.controller.dto.RemoveLinkRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +52,15 @@ public class ScrapperController {
     ) {
         log.info("Ссылка успешно добавлена");
         return new ResponseEntity<>(new LinkResponse(chatId, addLinkRequest.getUrl()), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/links")
+    public ResponseEntity<LinkResponse> deleteLink(
+        @RequestHeader("Tg-Chat-Id") Long chatId,
+        @RequestBody RemoveLinkRequest removeLinkRequest
+    ) {
+        log.info("Ссылка успешно удалена");
+        return new ResponseEntity<>(new LinkResponse(), HttpStatus.OK);
     }
 
 }
