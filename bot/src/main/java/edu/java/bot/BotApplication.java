@@ -1,7 +1,7 @@
 package edu.java.bot;
 
 import edu.java.bot.configuration.ApplicationConfig;
-import edu.java.bot.controller.MainBot;
+import edu.java.bot.processor.MainBot;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,11 +11,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @EnableConfigurationProperties(ApplicationConfig.class)
 @RequiredArgsConstructor
 public class BotApplication {
-
-    private final MainBot mainBot;
-
     public static void main(String[] args) {
         SpringApplication.run(BotApplication.class, args);
-        System.out.println();
     }
 }
