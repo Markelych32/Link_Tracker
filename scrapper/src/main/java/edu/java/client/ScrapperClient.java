@@ -4,9 +4,12 @@ import edu.java.controller.dto.AddLinkRequest;
 import edu.java.controller.dto.LinkResponse;
 import edu.java.controller.dto.ListLinksResponse;
 import edu.java.controller.dto.RemoveLinkRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+@Component
 public class ScrapperClient {
     private static final String BASE_URL = "http://localhost:8080";
     private static final String SCRAPPER_API_V_1_0_TG_CHAT_ID = "scrapper-api/tg-chat/{id}";
@@ -15,12 +18,13 @@ public class ScrapperClient {
 
     private final WebClient webClient;
 
+    @Autowired
     public ScrapperClient(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder.baseUrl(BASE_URL).build();
+        webClient = webClientBuilder.baseUrl(BASE_URL).build();
     }
 
     public ScrapperClient(WebClient.Builder webClientBuilder, String baseUrl) {
-        this.webClient = webClientBuilder.baseUrl(baseUrl).build();
+        webClient = webClientBuilder.baseUrl(baseUrl).build();
     }
 
     public void registerChat(Long tgChatId) {
