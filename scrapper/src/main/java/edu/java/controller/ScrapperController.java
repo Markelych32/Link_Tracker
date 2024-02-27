@@ -50,16 +50,16 @@ public class ScrapperController {
         @RequestHeader("Tg-Chat-Id") Long chatId
     ) {
         log.info("Ссылки успешно получены");
-        return new ResponseEntity<>(new ListLinksResponse(), HttpStatus.OK);
+        return new ResponseEntity<>(service.getLinksByChatId(chatId), HttpStatus.OK);
     }
 
     @PostMapping("/links")
-    public ResponseEntity<LinkResponse> addLinks(
+    public ResponseEntity<LinkResponse> addLink(
         @RequestHeader("Tg-Chat-Id") Long chatId,
         @RequestBody @Valid AddLinkRequest addLinkRequest
     ) {
         log.info("Ссылка успешно добавлена");
-        return new ResponseEntity<>(new LinkResponse(chatId, addLinkRequest.getUrl()), HttpStatus.OK);
+        return new ResponseEntity<>(service.addLinkByChatId(chatId, addLinkRequest), HttpStatus.OK);
     }
 
     @DeleteMapping("/links")

@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LinkResponse {
+
+    public static Long COUNTER = 0L;
+
     @JsonProperty("id")
     private Long id;
     @JsonProperty("url")
