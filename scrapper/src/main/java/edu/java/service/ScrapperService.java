@@ -3,14 +3,18 @@ package edu.java.service;
 import edu.java.controller.dto.AddLinkRequest;
 import edu.java.controller.dto.LinkResponse;
 import edu.java.controller.dto.ListLinksResponse;
+import edu.java.controller.dto.RemoveLinkRequest;
 import edu.java.exception.ChatAlreadyExistException;
 import edu.java.exception.ChatNotFoundException;
 import edu.java.exception.LinkAlreadyRegisteredInChatException;
+import edu.java.exception.LinkNotFoundByUrlException;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ScrapperService {
@@ -49,6 +53,19 @@ public class ScrapperService {
         }
         var result = new LinkResponse(++LinkResponse.COUNTER, urlLinkRequest);
         links.get(tgChatId).add(result);
+        return result;
+    }
+    public LinkResponse deleteLink(Long tgChatId, RemoveLinkRequest removeLinkRequest) {
+        if (!links.containsKey(tgChatId)) {
+            throw new ChatNotFoundException();
+        }
+        List<LinkResponse> list = links.get(tgChatId);
+        String url = removeLinkRequest.getUrl();
+        if (list.stream().noneMatch(linkResponse -> linkResponse.getUrl().equals(url))) {
+            throw new LinkNotFoundByUrlException();
+        }
+        LinkResponse result = list.stream().filter(l -> l.getUrl().equals(url)).findFirst().get();
+        list.remove(result);
         return result;
     }
 
