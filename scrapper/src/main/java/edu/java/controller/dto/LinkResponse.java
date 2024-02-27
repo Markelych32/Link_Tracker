@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LinkResponse {
 
-    public static Long COUNTER = 0L;
+    public static Long counter = 0L;
 
     @JsonProperty("id")
     private Long id;

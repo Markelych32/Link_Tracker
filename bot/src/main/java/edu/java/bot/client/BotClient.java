@@ -18,8 +18,8 @@ public class BotClient {
         webClient = webClientBuilder.baseUrl(BASE_URL).build();
     }
 
-    public BotClient(WebClient.Builder webClientBuilder, String base_url) {
-        webClient = webClientBuilder.baseUrl(base_url).build();
+    public BotClient(WebClient.Builder webClientBuilder, String baseUrl) {
+        webClient = webClientBuilder.baseUrl(baseUrl).build();
     }
 
     public void updateLink(LinkUpdate linkUpdate) {

@@ -8,13 +8,11 @@ import edu.java.exception.ChatAlreadyExistException;
 import edu.java.exception.ChatNotFoundException;
 import edu.java.exception.LinkAlreadyRegisteredInChatException;
 import edu.java.exception.LinkNotFoundByUrlException;
-import org.springframework.stereotype.Service;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
 
 @Service
 public class ScrapperService {
@@ -51,10 +49,11 @@ public class ScrapperService {
         if (list.stream().anyMatch(linkResponse -> linkResponse.getUrl().equals(urlLinkRequest))) {
             throw new LinkAlreadyRegisteredInChatException();
         }
-        var result = new LinkResponse(++LinkResponse.COUNTER, urlLinkRequest);
+        var result = new LinkResponse(++LinkResponse.counter, urlLinkRequest);
         links.get(tgChatId).add(result);
         return result;
     }
+
     public LinkResponse deleteLink(Long tgChatId, RemoveLinkRequest removeLinkRequest) {
         if (!links.containsKey(tgChatId)) {
             throw new ChatNotFoundException();

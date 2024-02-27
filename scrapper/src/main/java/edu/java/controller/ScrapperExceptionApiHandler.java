@@ -5,29 +5,35 @@ import edu.java.exception.ChatAlreadyExistException;
 import edu.java.exception.ChatNotFoundException;
 import edu.java.exception.LinkAlreadyRegisteredInChatException;
 import edu.java.exception.LinkNotFoundByUrlException;
+import java.util.Arrays;
+import java.util.List;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import java.util.Arrays;
-import java.util.List;
 
 @RestControllerAdvice
 public class ScrapperExceptionApiHandler {
+
+    private static final String UNADJUSTED_REQUEST_PARAMETERS = "Unadjusted request parameters";
+    private static final String TG_CHAT_NOT_FOUND = "Tg chat was not found";
+    private static final String CHAT_ALREADY_EXIST = "Tg chat is already was registered";
+    private static final String LINK_ALREADY_TRACKED = "Link was already tracked by chat";
 
     @ExceptionHandler({MethodArgumentTypeMismatchException.class, MethodArgumentNotValidException.class})
     public ResponseEntity<ApiErrorResponse> notCorrectTgChatRequest(Exception exception) {
         List<String> list = Arrays.stream(exception.getStackTrace()).map(StackTraceElement::toString).toList();
         return new ResponseEntity<>(
             ApiErrorResponse.builder()
-                .description("Unadjusted request parameters")
-                .code("400")
+                .description(UNADJUSTED_REQUEST_PARAMETERS)
+                .code(String.valueOf(HttpStatus.NOT_FOUND.value()))
                 .exceptionName("MethodArgumentTypeMismatchException, MethodArgumentNotValidException")
-                .exceptionMessage("Unadjusted request parameters")
+                .exceptionMessage(UNADJUSTED_REQUEST_PARAMETERS)
                 .stacktrace(list)
-                .build(), HttpStatusCode.valueOf(400)
+                .build(), HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value())
         );
     }
 
@@ -36,12 +42,12 @@ public class ScrapperExceptionApiHandler {
         List<String> list = Arrays.stream(exception.getStackTrace()).map(StackTraceElement::toString).toList();
         return new ResponseEntity<>(
             ApiErrorResponse.builder()
-                .description("Tg chat was not found")
-                .code("404")
+                .description(TG_CHAT_NOT_FOUND)
+                .code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
                 .exceptionName("ChatNotFoundException")
-                .exceptionMessage("Tg chat was not found")
+                .exceptionMessage(TG_CHAT_NOT_FOUND)
                 .stacktrace(list)
-                .build(), HttpStatusCode.valueOf(404)
+                .build(), HttpStatusCode.valueOf(HttpStatus.BAD_REQUEST.value())
         );
     }
 
@@ -50,12 +56,12 @@ public class ScrapperExceptionApiHandler {
         List<String> list = Arrays.stream(exception.getStackTrace()).map(StackTraceElement::toString).toList();
         return new ResponseEntity<>(
             ApiErrorResponse.builder()
-                .description("Tg chat is already was registered")
-                .code("404")
+                .description(CHAT_ALREADY_EXIST)
+                .code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
                 .exceptionName("ChatAlreadyExistException")
-                .exceptionMessage("Tg chat is already was registered")
+                .exceptionMessage(CHAT_ALREADY_EXIST)
                 .stacktrace(list)
-                .build(), HttpStatusCode.valueOf(404)
+                .build(), HttpStatusCode.valueOf(HttpStatus.BAD_REQUEST.value())
         );
     }
 
@@ -64,25 +70,26 @@ public class ScrapperExceptionApiHandler {
         List<String> list = Arrays.stream(exception.getStackTrace()).map(StackTraceElement::toString).toList();
         return new ResponseEntity<>(
             ApiErrorResponse.builder()
-                .description("Link was already tracked by chat")
-                .code("404")
+                .description(LINK_ALREADY_TRACKED)
+                .code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
                 .exceptionName("LinkAlreadyRegisteredInChatException")
-                .exceptionMessage("Link was already tracked by chat")
+                .exceptionMessage(LINK_ALREADY_TRACKED)
                 .stacktrace(list)
-                .build(), HttpStatusCode.valueOf(404)
+                .build(), HttpStatusCode.valueOf(HttpStatus.BAD_REQUEST.value())
         );
     }
+
     @ExceptionHandler(LinkNotFoundByUrlException.class)
     public ResponseEntity<ApiErrorResponse> linkNotFoundByUrl(Exception exception) {
         List<String> list = Arrays.stream(exception.getStackTrace()).map(StackTraceElement::toString).toList();
         return new ResponseEntity<>(
             ApiErrorResponse.builder()
-                .description("Link was not found with such url")
-                .code("404")
+                .description(LINK_ALREADY_TRACKED)
+                .code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
                 .exceptionName("LinkNotFoundByUrlException")
-                .exceptionMessage("Link was not found with such url")
+                .exceptionMessage(LINK_ALREADY_TRACKED)
                 .stacktrace(list)
-                .build(), HttpStatusCode.valueOf(404)
+                .build(), HttpStatusCode.valueOf(HttpStatus.BAD_REQUEST.value())
         );
     }
 }
