@@ -40,7 +40,7 @@ public class ScrapperController {
     public ResponseEntity<Void> deleteChat(
         @PathVariable Long id
     ) {
-        service.deleteTgChatById(id);
+        service.deleteChatById(id);
         log.info("Чат успешно удален");
         return new ResponseEntity<>(HttpStatus.OK);
     }
