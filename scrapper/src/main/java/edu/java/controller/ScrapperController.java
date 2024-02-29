@@ -1,9 +1,9 @@
 package edu.java.controller;
 
 import edu.java.controller.dto.request.AddLinkRequest;
+import edu.java.controller.dto.request.RemoveLinkRequest;
 import edu.java.controller.dto.response.LinkResponse;
 import edu.java.controller.dto.response.ListLinksResponse;
-import edu.java.controller.dto.request.RemoveLinkRequest;
 import edu.java.service.ScrapperService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

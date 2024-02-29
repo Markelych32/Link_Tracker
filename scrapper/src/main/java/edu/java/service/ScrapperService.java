@@ -1,9 +1,9 @@
 package edu.java.service;
 
 import edu.java.controller.dto.request.AddLinkRequest;
+import edu.java.controller.dto.request.RemoveLinkRequest;
 import edu.java.controller.dto.response.LinkResponse;
 import edu.java.controller.dto.response.ListLinksResponse;
-import edu.java.controller.dto.request.RemoveLinkRequest;
 import edu.java.exception.ChatAlreadyExistException;
 import edu.java.exception.ChatNotFoundException;
 import edu.java.exception.LinkAlreadyRegisteredInChatException;

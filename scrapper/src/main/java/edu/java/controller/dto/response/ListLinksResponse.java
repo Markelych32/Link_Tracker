@@ -2,7 +2,6 @@ package edu.java.controller.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
-import edu.java.controller.dto.response.LinkResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
