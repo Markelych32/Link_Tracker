@@ -1,6 +1,6 @@
 package edu.java.controller;
 
-import edu.java.controller.dto.ApiErrorResponse;
+import edu.java.controller.dto.response.ApiErrorResponse;
 import edu.java.exception.ChatAlreadyExistException;
 import edu.java.exception.ChatNotFoundException;
 import edu.java.exception.LinkAlreadyRegisteredInChatException;

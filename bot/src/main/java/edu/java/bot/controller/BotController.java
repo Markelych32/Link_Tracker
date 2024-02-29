@@ -1,6 +1,6 @@
 package edu.java.bot.controller;
 
-import edu.java.bot.controller.dto.LinkUpdate;
+import edu.java.bot.controller.dto.request.LinkUpdate;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

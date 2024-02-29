@@ -1,7 +1,7 @@
 package edu.java.scrapper.service;
 
-import edu.java.controller.dto.LinkResponse;
-import edu.java.controller.dto.RemoveLinkRequest;
+import edu.java.controller.dto.response.LinkResponse;
+import edu.java.controller.dto.request.RemoveLinkRequest;
 import edu.java.exception.ChatAlreadyExistException;
 import edu.java.exception.ChatNotFoundException;
 import edu.java.exception.LinkAlreadyRegisteredInChatException;

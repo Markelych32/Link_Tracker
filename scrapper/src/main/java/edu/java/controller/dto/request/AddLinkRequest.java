@@ -1,4 +1,4 @@
-package edu.java.controller.dto;
+package edu.java.controller.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RemoveLinkRequest {
+public class AddLinkRequest {
     @JsonProperty("url")
     @NotEmpty
     private String url;

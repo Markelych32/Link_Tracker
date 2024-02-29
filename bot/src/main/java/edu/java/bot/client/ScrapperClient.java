@@ -1,9 +1,9 @@
 package edu.java.bot.client;
 
-import edu.java.bot.controller.dto.AddLinkRequest;
-import edu.java.bot.controller.dto.LinkResponse;
-import edu.java.bot.controller.dto.ListLinksResponse;
-import edu.java.bot.controller.dto.RemoveLinkRequest;
+import edu.java.bot.controller.dto.request.AddLinkRequest;
+import edu.java.bot.controller.dto.response.LinkResponse;
+import edu.java.bot.controller.dto.response.ListLinksResponse;
+import edu.java.bot.controller.dto.request.RemoveLinkRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;

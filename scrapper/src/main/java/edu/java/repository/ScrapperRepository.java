@@ -1,13 +1,13 @@
 package edu.java.repository;
 
-import edu.java.controller.dto.AddLinkRequest;
-import edu.java.controller.dto.LinkResponse;
-import edu.java.controller.dto.RemoveLinkRequest;
-import org.springframework.stereotype.Repository;
+import edu.java.controller.dto.request.AddLinkRequest;
+import edu.java.controller.dto.response.LinkResponse;
+import edu.java.controller.dto.request.RemoveLinkRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class ScrapperRepository {

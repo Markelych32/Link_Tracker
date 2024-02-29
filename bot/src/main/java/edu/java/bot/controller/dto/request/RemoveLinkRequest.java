@@ -1,4 +1,4 @@
-package edu.java.bot.controller.dto;
+package edu.java.bot.controller.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;

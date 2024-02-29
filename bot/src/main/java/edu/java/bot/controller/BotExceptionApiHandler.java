@@ -1,6 +1,6 @@
 package edu.java.bot.controller;
 
-import edu.java.bot.controller.dto.ApiErrorResponse;
+import edu.java.bot.controller.dto.response.ApiErrorResponse;
 import java.util.Arrays;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;

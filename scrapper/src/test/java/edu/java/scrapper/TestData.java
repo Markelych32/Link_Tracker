@@ -1,9 +1,9 @@
 package edu.java.scrapper;
 
-import edu.java.controller.dto.AddLinkRequest;
-import edu.java.controller.dto.LinkResponse;
-import edu.java.controller.dto.ListLinksResponse;
-import edu.java.controller.dto.RemoveLinkRequest;
+import edu.java.controller.dto.request.AddLinkRequest;
+import edu.java.controller.dto.response.LinkResponse;
+import edu.java.controller.dto.response.ListLinksResponse;
+import edu.java.controller.dto.request.RemoveLinkRequest;
 import java.util.List;
 
 public final class TestData {
