@@ -1,9 +1,9 @@
-package edu.java.client;
+package edu.java.bot.client;
 
-import edu.java.controller.dto.AddLinkRequest;
-import edu.java.controller.dto.LinkResponse;
-import edu.java.controller.dto.ListLinksResponse;
-import edu.java.controller.dto.RemoveLinkRequest;
+import edu.java.bot.controller.dto.AddLinkRequest;
+import edu.java.bot.controller.dto.LinkResponse;
+import edu.java.bot.controller.dto.ListLinksResponse;
+import edu.java.bot.controller.dto.RemoveLinkRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
@@ -71,5 +71,4 @@ public class ScrapperClient {
             .bodyToMono(LinkResponse.class)
             .block();
     }
-
 }

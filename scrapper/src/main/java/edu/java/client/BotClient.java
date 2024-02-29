@@ -1,7 +1,12 @@
-package edu.java.bot.client;
+package edu.java.client;
 
-import edu.java.bot.controller.dto.LinkUpdate;
+import edu.java.controller.dto.AddLinkRequest;
+import edu.java.controller.dto.LinkResponse;
+import edu.java.controller.dto.LinkUpdate;
+import edu.java.controller.dto.ListLinksResponse;
+import edu.java.controller.dto.RemoveLinkRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -31,3 +36,4 @@ public class BotClient {
             .block();
     }
 }
+

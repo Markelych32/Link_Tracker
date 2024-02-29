@@ -70,5 +70,4 @@ public class ScrapperController {
         log.info("Ссылка успешно удалена");
         return new ResponseEntity<>(service.deleteLink(chatId, removeLinkRequest), HttpStatus.OK);
     }
-
 }
