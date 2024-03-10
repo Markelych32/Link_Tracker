@@ -1,4 +1,4 @@
-package edu.java.bot.model.processor;
+package edu.java.bot.processor;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;

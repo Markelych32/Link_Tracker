@@ -1,5 +1,6 @@
 package edu.java.bot.client;
 
+import edu.java.bot.configuration.ClientConfig;
 import edu.java.bot.controller.dto.request.AddLinkRequest;
 import edu.java.bot.controller.dto.request.RemoveLinkRequest;
 import edu.java.bot.controller.dto.response.LinkResponse;
@@ -11,20 +12,24 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
 public class ScrapperClient {
-    private static final String BASE_URL = "http://localhost:8080";
-    private static final String SCRAPPER_API_V_1_0_TG_CHAT_ID = "scrapper-api/tg-chat/{id}";
-    private static final String SCRAPPER_API_V_1_0_LINKS = "scrapper-api/links";
+
+    private static final String GENERAL_PATH = "scrapper-api/";
+    private static final String SCRAPPER_API_V_1_0_TG_CHAT_ID = "tg-chat/{id}";
+    private static final String SCRAPPER_API_V_1_0_LINKS = "/links";
     private static final String TG_CHAT_ID_IN_HEADER = "Tg-Chat-Id";
 
     private final WebClient webClient;
+    private final ClientConfig clientConfig;
 
     @Autowired
-    public ScrapperClient(WebClient.Builder webClientBuilder) {
-        webClient = webClientBuilder.baseUrl(BASE_URL).build();
+    public ScrapperClient(WebClient.Builder webClientBuilder, ClientConfig clientConfig) {
+        webClient = webClientBuilder.baseUrl(clientConfig.baseUrl()).build();
+        this.clientConfig = clientConfig;
     }
 
-    public ScrapperClient(WebClient.Builder webClientBuilder, String baseUrl) {
+    public ScrapperClient(WebClient.Builder webClientBuilder, ClientConfig clientConfig, String baseUrl) {
         webClient = webClientBuilder.baseUrl(baseUrl).build();
+        this.clientConfig = clientConfig;
     }
 
     public void registerChat(Long tgChatId) {
