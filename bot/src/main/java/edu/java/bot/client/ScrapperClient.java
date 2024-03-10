@@ -15,7 +15,7 @@ public class ScrapperClient {
 
     private static final String GENERAL_PATH = "scrapper-api/";
     private static final String SCRAPPER_API_V_1_0_TG_CHAT_ID = "tg-chat/{id}";
-    private static final String SCRAPPER_API_V_1_0_LINKS = "/links";
+    private static final String SCRAPPER_API_V_1_0_LINKS = "/links/{id}";
     private static final String TG_CHAT_ID_IN_HEADER = "Tg-Chat-Id";
 
     private final WebClient webClient;
@@ -34,7 +34,7 @@ public class ScrapperClient {
 
     public void registerChat(Long tgChatId) {
         webClient.post()
-            .uri(SCRAPPER_API_V_1_0_TG_CHAT_ID)
+            .uri(SCRAPPER_API_V_1_0_TG_CHAT_ID, tgChatId)
             .retrieve()
             .bodyToMono(Void.class)
             .block();
@@ -42,7 +42,7 @@ public class ScrapperClient {
 
     public void deleteChat(Long tgChatId) {
         webClient.delete()
-            .uri(SCRAPPER_API_V_1_0_TG_CHAT_ID)
+            .uri(SCRAPPER_API_V_1_0_TG_CHAT_ID, tgChatId)
             .retrieve()
             .bodyToMono(Void.class)
             .block();
@@ -50,8 +50,7 @@ public class ScrapperClient {
 
     public ListLinksResponse getLinks(Long tgChatId) {
         return webClient.get()
-            .uri(SCRAPPER_API_V_1_0_LINKS)
-            .header(TG_CHAT_ID_IN_HEADER, tgChatId.toString())
+            .uri(SCRAPPER_API_V_1_0_LINKS, tgChatId)
             .retrieve()
             .bodyToMono(ListLinksResponse.class)
             .block();
@@ -59,8 +58,7 @@ public class ScrapperClient {
 
     public LinkResponse addLink(Long tgChatId, AddLinkRequest addLinkRequest) {
         return webClient.post()
-            .uri(SCRAPPER_API_V_1_0_LINKS)
-            .header(TG_CHAT_ID_IN_HEADER, tgChatId.toString())
+            .uri(SCRAPPER_API_V_1_0_LINKS, tgChatId)
             .bodyValue(addLinkRequest)
             .retrieve()
             .bodyToMono(LinkResponse.class)
@@ -69,8 +67,7 @@ public class ScrapperClient {
 
     public LinkResponse deleteLink(Long tgChatId, RemoveLinkRequest removeLinkRequest) {
         return webClient.method(HttpMethod.DELETE)
-            .uri(SCRAPPER_API_V_1_0_LINKS)
-            .header(TG_CHAT_ID_IN_HEADER, tgChatId.toString())
+            .uri(SCRAPPER_API_V_1_0_LINKS, tgChatId)
             .bodyValue(removeLinkRequest)
             .retrieve()
             .bodyToMono(LinkResponse.class)
