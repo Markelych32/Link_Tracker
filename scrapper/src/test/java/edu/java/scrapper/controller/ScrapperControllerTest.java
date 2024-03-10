@@ -67,10 +67,9 @@ class ScrapperControllerTest {
         String removeLinkRequestJson = objectMapper.writeValueAsString(removeLinkRequest);
         when(service.deleteLink(1L, removeLinkRequest)).thenReturn(new LinkResponse(1L, "google.com"));
 
-        mockMvc.perform(delete("/scrapper-api/v1.0/links")
+        mockMvc.perform(delete("/scrapper-api/v1.0/links/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("utf-8")
-                .header("Tg-Chat-Id", 1L)
                 .content(removeLinkRequestJson))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.url").value("google.com"))
@@ -84,10 +83,9 @@ class ScrapperControllerTest {
         AddLinkRequest addLinkRequest = TestData.testAddLinkRequest();
         String addLinkRequestJson = objectMapper.writeValueAsString(addLinkRequest);
         when(service.addLinkByChatId(1L, addLinkRequest)).thenReturn(new LinkResponse(1L, "google.com"));
-        mockMvc.perform(post("/scrapper-api/v1.0/links")
+        mockMvc.perform(post("/scrapper-api/v1.0/links/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("utf-8")
-                .header("Tg-Chat-Id", 1L)
                 .content(addLinkRequestJson))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").value(1))
@@ -99,8 +97,7 @@ class ScrapperControllerTest {
         ListLinksResponse listLinksResponse = TestData.listLinksResponseWithLinks();
         String listLinksResponseJson = objectMapper.writeValueAsString(listLinksResponse);
         when(service.getLinksByChatId(anyLong())).thenReturn(TestData.listLinksResponseWithLinks());
-        mockMvc.perform(get("/scrapper-api/v1.0/links")
-                .header("Tg-Chat-Id", 1L))
+        mockMvc.perform(get("/scrapper-api/v1.0/links/1"))
             .andExpect(status().isOk());
         verify(service, times(1)).getLinksByChatId(1L);
     }
