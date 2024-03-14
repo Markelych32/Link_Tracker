@@ -18,20 +18,16 @@ public class JdbcChatDao implements ChatDao {
     private static final String FIND_ALL_SQL = "SELECT id, tg_chat_id FROM chat";
 
     private final JdbcTemplate jdbcTemplate;
-
-    private final RowMapper<Chat> chatRowMapper = (resultSet, rowNum) -> new Chat(
-        resultSet.getLong("id"),
-        resultSet.getLong("tg_chat_id")
-    );
+    private final ChatMapper chatRowMapper = new ChatMapper();
 
     @Override
-    public boolean add(Chat chat) {
-        return jdbcTemplate.update(ADD_SQL, chat.getTgChatId()) > 0;
+    public boolean add(Long tgChatId) {
+        return jdbcTemplate.update(ADD_SQL, tgChatId) > 0;
     }
 
     @Override
-    public boolean remove(Chat chat) {
-        return jdbcTemplate.update(REMOVE_SQL, chat.getTgChatId()) > 0;
+    public boolean remove(Long tgChatId) {
+        return jdbcTemplate.update(REMOVE_SQL, tgChatId) > 0;
     }
 
     @Override
