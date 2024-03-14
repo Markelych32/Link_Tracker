@@ -19,23 +19,19 @@ public class JdbcChatDao implements ChatDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final RowMapper<Chat> chatRowMapper = (resultSet, rowNum) -> {
-        Chat chat = new Chat();
-
-        chat.setId(resultSet.getLong("id"));
-        chat.setTgChatId(resultSet.getLong("tg_chat_id"));
-
-        return chat;
-    };
+    private final RowMapper<Chat> chatRowMapper = (resultSet, rowNum) -> new Chat(
+        resultSet.getLong("id"),
+        resultSet.getLong("tg_chat_id")
+    );
 
     @Override
-    public boolean add(Long tgChatId) {
-        return jdbcTemplate.update(ADD_SQL, tgChatId) > 0;
+    public boolean add(Chat chat) {
+        return jdbcTemplate.update(ADD_SQL, chat.getTgChatId()) > 0;
     }
 
     @Override
-    public boolean remove(Long tgChatId) {
-        return jdbcTemplate.update(REMOVE_SQL, tgChatId) > 0;
+    public boolean remove(Chat chat) {
+        return jdbcTemplate.update(REMOVE_SQL, chat.getTgChatId()) > 0;
     }
 
     @Override

@@ -4,9 +4,9 @@ import edu.java.domain.dto.Chat;
 import java.util.List;
 
 public interface ChatDao {
-    boolean add(Long tgChatId);
+    boolean add(Chat chat);
 
-    boolean remove(Long tgChatId);
+    boolean remove(Chat chat);
 
     List<Chat> findAll();
 
