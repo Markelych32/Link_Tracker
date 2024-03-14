@@ -9,4 +9,20 @@
         <sqlFile path="sql/init-tables.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
+    <changeSet id="chat-init" author="Solonchev">
+        <sqlFile path="sql/chat-input-data.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="link-init" author="Solonchev">
+        <sqlFile path="sql/link-input-data.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="chat-link-init" author="Solonchev">
+        <sqlFile path="sql/chat-link-init.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="chat-link-input-data.sql" author="Solonchev">
+        <sqlFile path="sql/chat-link-input-data.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
 </databaseChangeLog>
