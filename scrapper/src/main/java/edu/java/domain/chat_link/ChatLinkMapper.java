@@ -1,9 +1,9 @@
 package edu.java.domain.chat_link;
 
 import edu.java.domain.dto.ChatLink;
-import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.springframework.jdbc.core.RowMapper;
 
 public class ChatLinkMapper implements RowMapper<ChatLink> {
     @Override

@@ -1,9 +1,9 @@
 package edu.java.domain.chat;
 
 import edu.java.domain.dto.Chat;
-import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.springframework.jdbc.core.RowMapper;
 
 public class ChatMapper implements RowMapper<Chat> {
     @Override

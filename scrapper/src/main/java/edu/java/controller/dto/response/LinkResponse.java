@@ -1,5 +1,6 @@
 package edu.java.controller.dto.response;
 
+import edu.java.domain.dto.Link;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,4 +14,11 @@ public class LinkResponse {
 
     private Long id;
     private String url;
+
+    public static LinkResponse linkDtoToLinkResponse(Link link) {
+        return new LinkResponse(
+            link.getId(),
+            link.getUrl()
+        );
+    }
 }

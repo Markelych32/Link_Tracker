@@ -7,7 +7,6 @@ import edu.java.domain.dto.Link;
 import edu.java.scrapper.IntegrationTest;
 import edu.java.scrapper.TestData;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,17 +25,6 @@ public class JdbcChatLinkDaoTest extends IntegrationTest {
 
     private final ChatLinkMapper chatLinkMapper = new ChatLinkMapper();
 
-    @BeforeEach
-    void initDependentTables() {
-        jdbcTemplate.update("DELETE FROM link");
-        jdbcTemplate.update("DELETE FROM chat");
-        jdbcTemplate.update("INSERT INTO chat VALUES (1)");
-        jdbcTemplate.update("""
-            INSERT INTO link
-            VALUES (?, ?, ?, ?)
-            """, 1L, "test-url", OffsetDateTime.now(), OffsetDateTime.now());
-    }
-
     @Autowired
     public JdbcChatLinkDaoTest(JdbcChatLinkDao jdbcChatLinkDao, JdbcTemplate jdbcTemplate) {
         underTest = jdbcChatLinkDao;
@@ -47,6 +35,11 @@ public class JdbcChatLinkDaoTest extends IntegrationTest {
     @Transactional
     @Rollback
     void addTest() {
+        jdbcTemplate.update("INSERT INTO chat VALUES (1)");
+        jdbcTemplate.update("""
+            INSERT INTO link
+            VALUES (?, ?, ?, ?)
+            """, 1L, "test-url", OffsetDateTime.now(), OffsetDateTime.now());
         final ChatLink chatLink = new ChatLink(1L, 1L);
         underTest.add(1L, 1L);
         final Optional<ChatLink> findChatLink = underTest.find(1L, 1L);
@@ -59,6 +52,11 @@ public class JdbcChatLinkDaoTest extends IntegrationTest {
     @Transactional
     @Rollback
     void findTest() {
+        jdbcTemplate.update("INSERT INTO chat VALUES (1)");
+        jdbcTemplate.update("""
+            INSERT INTO link
+            VALUES (?, ?, ?, ?)
+            """, 1L, "test-url", OffsetDateTime.now(), OffsetDateTime.now());
         jdbcTemplate.update("""
             INSERT INTO chat_link
             VALUES (1, 1)
@@ -73,6 +71,11 @@ public class JdbcChatLinkDaoTest extends IntegrationTest {
     @Transactional
     @Rollback
     void findAllTest() {
+        jdbcTemplate.update("INSERT INTO chat VALUES (1)");
+        jdbcTemplate.update("""
+            INSERT INTO link
+            VALUES (?, ?, ?, ?)
+            """, 1L, "test-url", OffsetDateTime.now(), OffsetDateTime.now());
         jdbcTemplate.update("""
             INSERT INTO chat_link
             VALUES (1, 1)
@@ -87,11 +90,18 @@ public class JdbcChatLinkDaoTest extends IntegrationTest {
     @Transactional
     @Rollback
     void removeTest() {
+        jdbcTemplate.update("INSERT INTO chat VALUES (1)");
+        jdbcTemplate.update("""
+            INSERT INTO link
+            VALUES (?, ?, ?, ?)
+            """, 1L, "test-url", OffsetDateTime.now(), OffsetDateTime.now());
         jdbcTemplate.update("""
             INSERT INTO chat_link
             VALUES (1, 1)
             """);
-        underTest.remove(1L, 1L);
+        Link link = new Link();
+        link.setId(1L);
+        underTest.remove(1L, link);
         final List<ChatLink> findChatLink =
             jdbcTemplate.query("SELECT chat_id, link_id FROM chat_link", chatLinkMapper);
         Assertions.assertEquals(0, findChatLink.size());
@@ -101,6 +111,11 @@ public class JdbcChatLinkDaoTest extends IntegrationTest {
     @Transactional
     @Rollback
     void findChatsByLinkTest() {
+        jdbcTemplate.update("INSERT INTO chat VALUES (1)");
+        jdbcTemplate.update("""
+            INSERT INTO link
+            VALUES (?, ?, ?, ?)
+            """, 1L, "test-url", OffsetDateTime.now(), OffsetDateTime.now());
         jdbcTemplate.update("""
             INSERT INTO chat_link
             VALUES (1, 1)
@@ -110,5 +125,23 @@ public class JdbcChatLinkDaoTest extends IntegrationTest {
         final List<Long> findChats = underTest.findChatsByLink(link);
         Assertions.assertEquals(1L, findChats.size());
         Assertions.assertEquals(1L, findChats.get(0));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void isLinkPresentTest() {
+        jdbcTemplate.update("INSERT INTO chat VALUES (1)");
+        jdbcTemplate.update("""
+            INSERT INTO link
+            VALUES (?, ?, ?, ?)
+            """, 1L, "test-url", OffsetDateTime.now(), OffsetDateTime.now());
+        jdbcTemplate.update("""
+            INSERT INTO chat_link
+            VALUES (1, 1)
+            """);
+        Link link = TestData.testLinkDtoFirst();
+        link.setId(1L);
+        Assertions.assertTrue(underTest.isLinkPresent(link));
     }
 }

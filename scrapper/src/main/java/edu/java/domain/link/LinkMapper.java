@@ -1,10 +1,10 @@
 package edu.java.domain.link;
 
 import edu.java.domain.dto.Link;
-import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
+import org.springframework.jdbc.core.RowMapper;
 
 public class LinkMapper implements RowMapper<Link> {
     @Override

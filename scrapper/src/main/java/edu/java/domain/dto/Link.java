@@ -1,10 +1,9 @@
 package edu.java.domain.dto;
 
+import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.sql.Timestamp;
-import java.time.OffsetDateTime;
 
 @Data
 @AllArgsConstructor
