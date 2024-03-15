@@ -1,0 +1,21 @@
+package edu.java.domain.chat_link;
+
+import edu.java.domain.dto.Chat;
+import edu.java.domain.dto.ChatLink;
+import edu.java.domain.dto.Link;
+import java.util.List;
+import java.util.Optional;
+
+public interface ChatLinkDao {
+    boolean add(Long chatId, Long linkId);
+
+    boolean remove(Long chatId, Long linkId);
+
+    List<ChatLink> findAll();
+
+    Optional<ChatLink> find(Long chatId, Long linkId);
+
+    List<Long> findChatsByLink(Link link);
+
+    boolean isLinkPresent(Link link);
+}

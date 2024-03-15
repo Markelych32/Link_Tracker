@@ -3,8 +3,8 @@ package edu.java.domain.chat;
 import edu.java.domain.dto.Chat;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
@@ -39,6 +39,11 @@ public class JdbcChatDao implements ChatDao {
 
     @Override
     public Optional<Chat> find(Long tgChatId) {
-        return Optional.ofNullable(jdbcTemplate.queryForObject(FIND_SQL, chatRowMapper, tgChatId));
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(FIND_SQL, chatRowMapper, tgChatId));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+
     }
 }
