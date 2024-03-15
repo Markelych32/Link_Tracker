@@ -9,8 +9,7 @@ public class ChatMapper implements RowMapper<Chat> {
     @Override
     public Chat mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         return new Chat(
-            resultSet.getLong("id"),
-            resultSet.getLong("tg_chat_id")
+            resultSet.getLong("id")
         );
     }
 }

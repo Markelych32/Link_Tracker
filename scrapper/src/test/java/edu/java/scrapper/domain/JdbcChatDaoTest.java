@@ -5,13 +5,14 @@ import edu.java.domain.chat.JdbcChatDao;
 import edu.java.domain.dto.Chat;
 import edu.java.scrapper.IntegrationTest;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 public class JdbcChatDaoTest extends IntegrationTest {
@@ -30,31 +31,39 @@ public class JdbcChatDaoTest extends IntegrationTest {
     @Transactional
     @Rollback
     void addTest() {
-        jdbcTemplate.update("DELETE FROM chat");
         underTest.add(1L);
-        Chat chat = jdbcTemplate.queryForObject("SELECT * FROM chat WHERE tg_chat_id = 1", chatMapper);
+        Chat chat = jdbcTemplate.queryForObject("SELECT * FROM chat WHERE id = 1", chatMapper);
         assert chat != null;
-        Assertions.assertEquals(1L, chat.getTgChatId());
+        Assertions.assertEquals(1L, chat.getId());
     }
 
     @Test
     @Transactional
     @Rollback
     void removeTest() {
-        jdbcTemplate.update("DELETE FROM chat");
         underTest.add(1L);
-        underTest.remove(1L);
-        Integer rowCount = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM chat WHERE tg_chat_id = 1", Integer.class);
+        boolean result = underTest.remove(1L);
+        Integer rowCount = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM chat WHERE id = 1", Integer.class);
         Assertions.assertEquals(rowCount, 0);
+        Assertions.assertTrue(result);
     }
 
     @Test
     @Transactional
     @Rollback
     void findAllTest() {
-        jdbcTemplate.update("DELETE FROM chat");
         underTest.add(1L);
         underTest.add(2L);
-        Assertions.assertEquals(underTest.findAll().size(), 2);
+        List<Long> chats = underTest.findAll().stream().map(Chat::getId).toList();
+        Assertions.assertEquals(List.of(1L, 2L), chats);
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void findExistChatTestShouldReturnChat() {
+        underTest.add(1L);
+        Optional<Chat> chat = underTest.find(1L);
+        Assertions.assertEquals(1L, chat.get().getId());
     }
 }

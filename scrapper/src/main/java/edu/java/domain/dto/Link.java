@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 
 @Data
 @AllArgsConstructor
@@ -11,5 +12,6 @@ import java.sql.Timestamp;
 public class Link {
     private Long id;
     private String url;
-    private Timestamp lastUpdate;
+    private OffsetDateTime lastUpdate;
+    private OffsetDateTime lastCheck;
 }
