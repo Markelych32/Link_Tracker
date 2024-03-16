@@ -35,6 +35,9 @@ public class JdbcChatLinkDaoTest extends IntegrationTest {
     @Transactional
     @Rollback
     void addTest() {
+        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
+        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
+        jdbcTemplate.update("DELETE FROM link WHERE id = 1");
         jdbcTemplate.update("INSERT INTO chat VALUES (1)");
         jdbcTemplate.update("""
             INSERT INTO link
@@ -52,6 +55,9 @@ public class JdbcChatLinkDaoTest extends IntegrationTest {
     @Transactional
     @Rollback
     void findTest() {
+        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
+        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
+        jdbcTemplate.update("DELETE FROM link WHERE id = 1");
         jdbcTemplate.update("INSERT INTO chat VALUES (1)");
         jdbcTemplate.update("""
             INSERT INTO link
@@ -71,6 +77,9 @@ public class JdbcChatLinkDaoTest extends IntegrationTest {
     @Transactional
     @Rollback
     void findAllTest() {
+        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
+        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
+        jdbcTemplate.update("DELETE FROM link WHERE id = 1");
         jdbcTemplate.update("INSERT INTO chat VALUES (1)");
         jdbcTemplate.update("""
             INSERT INTO link
@@ -90,6 +99,9 @@ public class JdbcChatLinkDaoTest extends IntegrationTest {
     @Transactional
     @Rollback
     void removeTest() {
+        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
+        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
+        jdbcTemplate.update("DELETE FROM link WHERE id = 1");
         jdbcTemplate.update("INSERT INTO chat VALUES (1)");
         jdbcTemplate.update("""
             INSERT INTO link
@@ -111,6 +123,9 @@ public class JdbcChatLinkDaoTest extends IntegrationTest {
     @Transactional
     @Rollback
     void findChatsByLinkTest() {
+        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
+        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
+        jdbcTemplate.update("DELETE FROM link WHERE id = 1");
         jdbcTemplate.update("INSERT INTO chat VALUES (1)");
         jdbcTemplate.update("""
             INSERT INTO link
@@ -131,6 +146,9 @@ public class JdbcChatLinkDaoTest extends IntegrationTest {
     @Transactional
     @Rollback
     void isLinkPresentTest() {
+        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
+        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
+        jdbcTemplate.update("DELETE FROM link WHERE id = 1");
         jdbcTemplate.update("INSERT INTO chat VALUES (1)");
         jdbcTemplate.update("""
             INSERT INTO link

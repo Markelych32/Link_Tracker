@@ -31,6 +31,8 @@ public class JdbcChatDaoTest extends IntegrationTest {
     @Transactional
     @Rollback
     void addTest() {
+        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
+        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
         underTest.add(1L);
         Chat chat = jdbcTemplate.queryForObject("SELECT * FROM chat WHERE id = 1", chatMapper);
         assert chat != null;
@@ -41,6 +43,8 @@ public class JdbcChatDaoTest extends IntegrationTest {
     @Transactional
     @Rollback
     void removeTest() {
+        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
+        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
         underTest.add(1L);
         boolean result = underTest.remove(1L);
         Integer rowCount = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM chat WHERE id = 1", Integer.class);
@@ -52,6 +56,10 @@ public class JdbcChatDaoTest extends IntegrationTest {
     @Transactional
     @Rollback
     void findAllTest() {
+        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
+        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
+        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 2");
+        jdbcTemplate.update("DELETE FROM chat WHERE id = 2");
         underTest.add(1L);
         underTest.add(2L);
         List<Long> chats = underTest.findAll().stream().map(Chat::getId).toList();
@@ -62,6 +70,8 @@ public class JdbcChatDaoTest extends IntegrationTest {
     @Transactional
     @Rollback
     void findExistChatTestShouldReturnChat() {
+        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
+        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
         underTest.add(1L);
         Optional<Chat> chat = underTest.find(1L);
         Assertions.assertEquals(1L, chat.get().getId());

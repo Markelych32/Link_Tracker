@@ -20,16 +20,21 @@ import java.util.stream.Collectors;
 public class JdbcLinkDaoTest extends IntegrationTest {
 
     private final JdbcLinkDao underTest;
+    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public JdbcLinkDaoTest(JdbcLinkDao jdbcLinkDao) {
+    public JdbcLinkDaoTest(JdbcLinkDao jdbcLinkDao, JdbcTemplate jdbcTemplate) {
         this.underTest = jdbcLinkDao;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Test
     @Transactional
     @Rollback
     void addTest() {
+        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
+        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
+        jdbcTemplate.update("DELETE FROM link WHERE id = 1");
         Link link = TestData.testLinkDtoFirst();
         underTest.add(link);
         Optional<Link> findLink = underTest.find(link.getUrl());
@@ -41,6 +46,9 @@ public class JdbcLinkDaoTest extends IntegrationTest {
     @Transactional
     @Rollback
     void removeTest() {
+        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
+        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
+        jdbcTemplate.update("DELETE FROM link WHERE id = 1");
         Link link = TestData.testLinkDtoFirst();
         underTest.remove(link.getUrl());
         Optional<Link> linkFromDB = underTest.find(link.getUrl());
@@ -51,6 +59,8 @@ public class JdbcLinkDaoTest extends IntegrationTest {
     @Transactional
     @Rollback
     void findAllTest() {
+        jdbcTemplate.update("DELETE FROM chat_link");
+        jdbcTemplate.update("DELETE FROM link");
         Link link1 = TestData.testLinkDtoFirst();
         Link link2 = TestData.testLinkDtoSecond();
         underTest.add(link1);
