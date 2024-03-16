@@ -7,10 +7,10 @@ import edu.java.service.chat.ChatService;
 import edu.java.service.link.LinkService;
 import edu.java.stackOverflow.ItemResponse;
 import edu.java.stackOverflow.StackOverflowClient;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import java.net.URI;
 import java.time.OffsetDateTime;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor

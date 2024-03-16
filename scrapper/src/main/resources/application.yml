@@ -3,7 +3,6 @@ app:
     enable: true
     interval: 10s
     force-check-delay: 10s
-    seconds: 40
 
 spring:
   application:
@@ -24,5 +23,11 @@ server:
 
 logging:
   config: classpath:log4j2-plain.xml
+
 client:
   base-url: ${BOT_CLIENT_BASE_URL}
+
+database:
+  url: ${DB_URL}
+  username: ${DB_USERNAME}
+  password: ${DB_PASSWORD}

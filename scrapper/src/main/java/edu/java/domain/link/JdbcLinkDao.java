@@ -39,21 +39,23 @@ public class JdbcLinkDao implements LinkDao {
 
     private final LinkMapper linkRowMapper = new LinkMapper();
 
+    private static final int COLUMN_NUM_OF_LAST_UPDATE = 2;
+    private static final int COLUMN_NUM_OF_LAST_CHECK = 3;
+
     @Override
     public Long add(Link link) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-//        jdbcTemplate.update(ADD_SQL, link.getUrl(), link.getLastUpdate(), link.getLastCheck(), keyHolder);
         jdbcTemplate.update(new PreparedStatementCreator() {
             @Override
             public @NotNull PreparedStatement createPreparedStatement(Connection con) throws SQLException {
                 PreparedStatement preparedStatement = con.prepareStatement(ADD_SQL, new String[] {"id"});
                 preparedStatement.setString(1, link.getUrl());
                 preparedStatement.setTimestamp(
-                    2,
+                    COLUMN_NUM_OF_LAST_UPDATE,
                     Timestamp.valueOf(link.getLastUpdate().atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime())
                 );
                 preparedStatement.setTimestamp(
-                    3,
+                    COLUMN_NUM_OF_LAST_CHECK,
                     Timestamp.valueOf(link.getLastCheck().atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime())
                 );
                 return preparedStatement;

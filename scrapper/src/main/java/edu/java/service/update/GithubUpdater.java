@@ -7,10 +7,10 @@ import edu.java.github.GithubClient;
 import edu.java.github.RepositoryResponse;
 import edu.java.service.chat.ChatService;
 import edu.java.service.link.LinkService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import java.net.URI;
 import java.time.OffsetDateTime;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
