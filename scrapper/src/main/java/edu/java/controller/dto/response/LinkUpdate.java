@@ -12,10 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LinkUpdate {
-    @NotNull
-    private Long id;
     @NotBlank
     private String url;
+    @NotEmpty
     private String description;
     @NotEmpty
     private List<Long> tgChatIds;

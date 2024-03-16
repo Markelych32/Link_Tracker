@@ -1,6 +1,5 @@
 package edu.java.domain.chat_link;
 
-import edu.java.domain.chat.ChatMapper;
 import edu.java.domain.dto.ChatLink;
 import edu.java.domain.dto.Link;
 import java.util.List;
@@ -23,7 +22,6 @@ public class JdbcChatLinkDao implements ChatLinkDao {
     private final JdbcTemplate jdbcTemplate;
 
     private final ChatLinkMapper chatLinkMapper = new ChatLinkMapper();
-    private final ChatMapper chatMapper = new ChatMapper();
 
     @Override
     public boolean add(Long chatId, Long linkId) {
