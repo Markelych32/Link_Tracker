@@ -10,7 +10,6 @@ import java.util.List;
 
 public final class TestData {
     private TestData() {
-
     }
 
     public static Long testThChatId() {
