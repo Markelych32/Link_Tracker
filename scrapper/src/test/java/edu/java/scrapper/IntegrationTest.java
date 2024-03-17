@@ -72,9 +72,9 @@ public abstract class IntegrationTest {
         registry.add("spring.datasource.url", POSTGRES::getJdbcUrl);
         registry.add("spring.datasource.username", POSTGRES::getUsername);
         registry.add("spring.datasource.password", POSTGRES::getPassword);
-        registry.add("database.url", POSTGRES::getJdbcUrl);
-        registry.add("database.username", POSTGRES::getUsername);
-        registry.add("database.password", POSTGRES::getPassword);
+//        registry.add("database.url", POSTGRES::getJdbcUrl);
+//        registry.add("database.username", POSTGRES::getUsername);
+//        registry.add("database.password", POSTGRES::getPassword);
         registry.add("spring.datasource.driver", POSTGRES::getDriverClassName);
     }
 
