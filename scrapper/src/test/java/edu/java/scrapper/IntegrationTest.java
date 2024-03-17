@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Testcontainers
-@SpringBootTest
 public abstract class IntegrationTest {
     public static PostgreSQLContainer<?> POSTGRES;
 
@@ -50,13 +49,13 @@ public abstract class IntegrationTest {
     @SneakyThrows
     private static void runMigrations(JdbcDatabaseContainer<?> c)
         throws SQLException, LiquibaseException, FileNotFoundException {
-        Connection connection = DriverManager.getConnection(
-            c.getJdbcUrl(),
-            c.getUsername(),
-            c.getPassword()
-        );
+//        Connection connection = DriverManager.getConnection(
+//            c.getJdbcUrl(),
+//            c.getUsername(),
+//            c.getPassword()
+//        );
         Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(
-            new JdbcConnection(connection)
+            new JdbcConnection(c.createConnection(""))
         );
         Path changelogPath = new File(".").toPath().toAbsolutePath().getParent().getParent().resolve("migrations");
         Liquibase liquibase = new Liquibase(
