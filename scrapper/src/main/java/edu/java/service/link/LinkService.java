@@ -11,7 +11,7 @@ public interface LinkService {
 
     Link removeLink(Long tgChatId, RemoveLinkRequest removeLinkRequest);
 
-    boolean update(Link link);
+    void update(Link link);
 
     List<Link> findOldLinks(long seconds);
 

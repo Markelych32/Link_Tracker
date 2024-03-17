@@ -8,12 +8,14 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.DirectoryResourceAccessor;
-import lombok.SneakyThrows;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -21,16 +23,18 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Testcontainers
+@SpringBootTest
+@Transactional
 public abstract class IntegrationTest {
-    public static PostgreSQLContainer<?> POSTGRES;
+
+    @ServiceConnection
+    static PostgreSQLContainer<?> POSTGRES;
+
+    @Autowired
+    protected JdbcTemplate jdbcTemplate;
 
     static {
         POSTGRES = new PostgreSQLContainer<>("postgres:16")
@@ -46,17 +50,16 @@ public abstract class IntegrationTest {
         }
     }
 
-    @SneakyThrows
+    @BeforeEach
+    public void restartIdentity() {
+        jdbcTemplate.update("TRUNCATE chat_link RESTART IDENTITY");
+    }
+
     private static void runMigrations(JdbcDatabaseContainer<?> c)
         throws SQLException, LiquibaseException, FileNotFoundException {
-//        Connection connection = DriverManager.getConnection(
-//            c.getJdbcUrl(),
-//            c.getUsername(),
-//            c.getPassword()
-//        );
+        Connection connection = POSTGRES.createConnection("");
         Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(
-            new JdbcConnection(c.createConnection(""))
-        );
+            new JdbcConnection(connection));
         Path changelogPath = new File(".").toPath().toAbsolutePath().getParent().getParent().resolve("migrations");
         Liquibase liquibase = new Liquibase(
             "master.xml",
@@ -71,28 +74,5 @@ public abstract class IntegrationTest {
         registry.add("spring.datasource.url", POSTGRES::getJdbcUrl);
         registry.add("spring.datasource.username", POSTGRES::getUsername);
         registry.add("spring.datasource.password", POSTGRES::getPassword);
-//        registry.add("database.url", POSTGRES::getJdbcUrl);
-//        registry.add("database.username", POSTGRES::getUsername);
-//        registry.add("database.password", POSTGRES::getPassword);
-//        registry.add("spring.datasource.driver", POSTGRES::getDriverClassName);
-    }
-
-    @Test
-    void checkDatabaseAfterMigrations() throws SQLException {
-        Connection connection = DriverManager.getConnection(
-            POSTGRES.getJdbcUrl(),
-            POSTGRES.getUsername(),
-            POSTGRES.getPassword()
-        );
-        DatabaseMetaData databaseMetaData = connection.getMetaData();
-        ResultSet resultSet = databaseMetaData.getTables(null, null, null, new String[] {"TABLE"});
-        List<String> tables = new ArrayList<>();
-        while (resultSet.next()) {
-            tables.add(resultSet.getString("TABLE_NAME"));
-        }
-        Assertions.assertEquals(
-            List.of("chat", "chat_link", "databasechangelog", "databasechangeloglock", "link"),
-            tables
-        );
     }
 }

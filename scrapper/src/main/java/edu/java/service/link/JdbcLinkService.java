@@ -74,8 +74,8 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
-    public boolean update(Link link) {
-        return linkDao.update(link);
+    public void update(Link link) {
+        linkDao.update(link);
     }
 
     @Override

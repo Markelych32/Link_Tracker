@@ -90,10 +90,8 @@ public class JdbcLinkDao implements LinkDao {
     }
 
     @Override
-    public boolean update(Link link) {
-        return
-            jdbcTemplate.update(UPDATE_SQL, linkRowMapper, link.getLastUpdate(), link.getLastCheck(), link.getUrl())
-            > 0;
+    public void update(Link link) {
+        jdbcTemplate.update(UPDATE_SQL, link.getLastUpdate(), link.getLastCheck(), link.getUrl());
     }
 
 }

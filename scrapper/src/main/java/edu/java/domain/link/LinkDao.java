@@ -9,7 +9,7 @@ public interface LinkDao {
 
     boolean remove(String url);
 
-    boolean update(Link link);
+    void update(Link link);
 
     List<Link> findAll();
 
