@@ -23,14 +23,10 @@ public class DatabaseConfig {
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
-//        dataSource.setDriverClassName(Objects.requireNonNull(environment.getProperty("driver")));
-//        dataSource.setUrl(environment.getProperty("url"));
-//        dataSource.setUsername(environment.getProperty("username_value"));
-//        dataSource.setPassword(environment.getProperty("password"));
-        dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl("jdbc:postgresql://localhost:5433/scrapper");
-        dataSource.setUsername("postgres");
-        dataSource.setPassword("postgres");
+        dataSource.setDriverClassName(Objects.requireNonNull(environment.getProperty("driver")));
+        dataSource.setUrl(environment.getProperty("url"));
+        dataSource.setUsername(environment.getProperty("username_value"));
+        dataSource.setPassword(environment.getProperty("password"));
 
         return dataSource;
     }

@@ -8,6 +8,7 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.DirectoryResourceAccessor;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,6 +47,7 @@ public abstract class IntegrationTest {
         }
     }
 
+    @SneakyThrows
     private static void runMigrations(JdbcDatabaseContainer<?> c)
         throws SQLException, LiquibaseException, FileNotFoundException {
         Connection connection = DriverManager.getConnection(
@@ -70,6 +72,10 @@ public abstract class IntegrationTest {
         registry.add("spring.datasource.url", POSTGRES::getJdbcUrl);
         registry.add("spring.datasource.username", POSTGRES::getUsername);
         registry.add("spring.datasource.password", POSTGRES::getPassword);
+        registry.add("database.url", POSTGRES::getJdbcUrl);
+        registry.add("database.username", POSTGRES::getUsername);
+        registry.add("database.password", POSTGRES::getPassword);
+        registry.add("spring.datasource.driver", POSTGRES::getDriverClassName);
     }
 
     @Test
