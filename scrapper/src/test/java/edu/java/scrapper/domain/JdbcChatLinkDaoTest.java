@@ -1,9 +1,11 @@
 package edu.java.scrapper.domain;
 
+import edu.java.domain.chat.JdbcChatDao;
 import edu.java.domain.chat_link.ChatLinkMapper;
 import edu.java.domain.chat_link.JdbcChatLinkDao;
 import edu.java.domain.dto.ChatLink;
 import edu.java.domain.dto.Link;
+import edu.java.domain.link.JdbcLinkDao;
 import edu.java.scrapper.IntegrationTest;
 import edu.java.scrapper.TestData;
 import org.junit.jupiter.api.Assertions;
@@ -21,101 +23,120 @@ import java.util.Optional;
 public class JdbcChatLinkDaoTest extends IntegrationTest {
 
     private final JdbcChatLinkDao underTest;
-    private final JdbcTemplate jdbcTemplate;
+    private final JdbcChatDao chatDao;
+    private final JdbcLinkDao linkDao;
+    // private final JdbcTemplate jdbcTemplate;
 
     private final ChatLinkMapper chatLinkMapper = new ChatLinkMapper();
 
     @Autowired
-    public JdbcChatLinkDaoTest(JdbcChatLinkDao jdbcChatLinkDao, JdbcTemplate jdbcTemplate) {
+    public JdbcChatLinkDaoTest(JdbcChatLinkDao jdbcChatLinkDao, JdbcChatDao chatDao, JdbcLinkDao linkDao) {
         underTest = jdbcChatLinkDao;
-        this.jdbcTemplate = jdbcTemplate;
+        this.chatDao = chatDao;
+        this.linkDao = linkDao;
+        // this.jdbcTemplate = jdbcTemplate;
     }
 
     @Test
     @Transactional
     @Rollback
     void addTest() {
-        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
-        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
-        jdbcTemplate.update("DELETE FROM link WHERE id = 1");
-        jdbcTemplate.update("INSERT INTO chat VALUES (1)");
-        jdbcTemplate.update("""
-            INSERT INTO link
-            VALUES (?, ?, ?, ?)
-            """, 1L, "test-url", OffsetDateTime.now(), OffsetDateTime.now());
+//        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
+//        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
+//        jdbcTemplate.update("DELETE FROM link WHERE id = 1");
+//        jdbcTemplate.update("INSERT INTO chat VALUES (1)");
+//        jdbcTemplate.update("""
+//            INSERT INTO link
+//            VALUES (?, ?, ?, ?)
+//            """, 1L, "test-url", OffsetDateTime.now(), OffsetDateTime.now());
+        chatDao.add(1L);
+        Long linkId = linkDao.add(TestData.testLinkDtoFirst());
         final ChatLink chatLink = new ChatLink(1L, 1L);
-        underTest.add(1L, 1L);
-        final Optional<ChatLink> findChatLink = underTest.find(1L, 1L);
+        underTest.add(1L, linkId);
+        final Optional<ChatLink> findChatLink = underTest.find(1L, linkId);
         Assertions.assertTrue(findChatLink.isPresent());
         Assertions.assertEquals(1L, findChatLink.get().getChatId());
-        Assertions.assertEquals(1L, findChatLink.get().getLinkId());
+        Assertions.assertEquals(linkId, findChatLink.get().getLinkId());
     }
 
     @Test
     @Transactional
     @Rollback
     void findTest() {
-        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
-        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
-        jdbcTemplate.update("DELETE FROM link WHERE id = 1");
-        jdbcTemplate.update("INSERT INTO chat VALUES (1)");
-        jdbcTemplate.update("""
-            INSERT INTO link
-            VALUES (?, ?, ?, ?)
-            """, 1L, "test-url", OffsetDateTime.now(), OffsetDateTime.now());
-        jdbcTemplate.update("""
-            INSERT INTO chat_link
-            VALUES (1, 1)
-            """);
-        final Optional<ChatLink> actualResult = underTest.find(1L, 1L);
+//        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
+//        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
+//        jdbcTemplate.update("DELETE FROM link WHERE id = 1");
+//        jdbcTemplate.update("INSERT INTO chat VALUES (1)");
+//        jdbcTemplate.update("""
+//            INSERT INTO link
+//            VALUES (?, ?, ?, ?)
+//            """, 1L, "test-url", OffsetDateTime.now(), OffsetDateTime.now());
+//        jdbcTemplate.update("""
+//            INSERT INTO chat_link
+//            VALUES (1, 1)
+//            """);
+        chatDao.add(1L);
+        Long linkId = linkDao.add(TestData.testLinkDtoFirst());
+        final ChatLink chatLink = new ChatLink(1L, 1L);
+        underTest.add(1L, linkId);
+        final Optional<ChatLink> actualResult = underTest.find(1L, linkId);
         Assertions.assertTrue(actualResult.isPresent());
         Assertions.assertEquals(1L, actualResult.get().getChatId());
-        Assertions.assertEquals(1L, actualResult.get().getLinkId());
+        Assertions.assertEquals(linkId, actualResult.get().getLinkId());
     }
 
     @Test
     @Transactional
     @Rollback
     void findAllTest() {
-        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
-        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
-        jdbcTemplate.update("DELETE FROM link WHERE id = 1");
-        jdbcTemplate.update("INSERT INTO chat VALUES (1)");
-        jdbcTemplate.update("""
-            INSERT INTO link
-            VALUES (?, ?, ?, ?)
-            """, 1L, "test-url", OffsetDateTime.now(), OffsetDateTime.now());
-        jdbcTemplate.update("""
-            INSERT INTO chat_link
-            VALUES (1, 1)
-            """);
+//        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
+//        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
+//        jdbcTemplate.update("DELETE FROM link WHERE id = 1");
+//        jdbcTemplate.update("INSERT INTO chat VALUES (1)");
+//        jdbcTemplate.update("""
+//            INSERT INTO link
+//            VALUES (?, ?, ?, ?)
+//            """, 1L, "test-url", OffsetDateTime.now(), OffsetDateTime.now());
+//        jdbcTemplate.update("""
+//            INSERT INTO chat_link
+//            VALUES (1, 1)
+//            """);
+        chatDao.add(1L);
+        Long linkId = linkDao.add(TestData.testLinkDtoFirst());
+        final ChatLink chatLink = new ChatLink(1L, 1L);
+        underTest.add(1L, linkId);
         final List<ChatLink> actualResult = underTest.findAll();
         Assertions.assertEquals(1, actualResult.size());
         Assertions.assertEquals(1, actualResult.get(0).getChatId());
-        Assertions.assertEquals(1, actualResult.get(0).getLinkId());
+        Assertions.assertEquals(linkId, actualResult.get(0).getLinkId());
     }
 
     @Test
     @Transactional
     @Rollback
     void removeTest() {
-        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
-        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
-        jdbcTemplate.update("DELETE FROM link WHERE id = 1");
-        jdbcTemplate.update("INSERT INTO chat VALUES (1)");
-        jdbcTemplate.update("""
-            INSERT INTO link
-            VALUES (?, ?, ?, ?)
-            """, 1L, "test-url", OffsetDateTime.now(), OffsetDateTime.now());
-        jdbcTemplate.update("""
-            INSERT INTO chat_link
-            VALUES (1, 1)
-            """);
-        Link link = new Link();
-        link.setId(1L);
-        underTest.remove(1L, link);
-        final List<ChatLink> findChatLink =
-            jdbcTemplate.query("SELECT chat_id, link_id FROM chat_link", chatLinkMapper);
+//        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
+//        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
+//        jdbcTemplate.update("DELETE FROM link WHERE id = 1");
+//        jdbcTemplate.update("INSERT INTO chat VALUES (1)");
+//        jdbcTemplate.update("""
+//            INSERT INTO link
+//            VALUES (?, ?, ?, ?)
+//            """, 1L, "test-url", OffsetDateTime.now(), OffsetDateTime.now());
+//        jdbcTemplate.update("""
+//            INSERT INTO chat_link
+//            VALUES (1, 1)
+//            """);
+        chatDao.add(1L);
+        Link testLink = TestData.testLinkDtoFirst();
+        Long linkId = linkDao.add(testLink);
+        final ChatLink chatLink = new ChatLink(1L, 1L);
+        underTest.add(1L, linkId);
+        testLink.setId(linkId);
+        underTest.remove(1L, testLink);
+//        final List<ChatLink> findChatLink =
+//            jdbcTemplate.query("SELECT chat_id, link_id FROM chat_link", chatLinkMapper);
+        final List<ChatLink> findChatLink = underTest.findAll();
         Assertions.assertEquals(0, findChatLink.size());
     }
 
@@ -123,21 +144,24 @@ public class JdbcChatLinkDaoTest extends IntegrationTest {
     @Transactional
     @Rollback
     void findChatsByLinkTest() {
-        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
-        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
-        jdbcTemplate.update("DELETE FROM link WHERE id = 1");
-        jdbcTemplate.update("INSERT INTO chat VALUES (1)");
-        jdbcTemplate.update("""
-            INSERT INTO link
-            VALUES (?, ?, ?, ?)
-            """, 1L, "test-url", OffsetDateTime.now(), OffsetDateTime.now());
-        jdbcTemplate.update("""
-            INSERT INTO chat_link
-            VALUES (1, 1)
-            """);
-        Link link = TestData.testLinkDtoFirst();
-        link.setId(1L);
-        final List<Long> findChats = underTest.findChatsByLink(link);
+//        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
+//        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
+//        jdbcTemplate.update("DELETE FROM link WHERE id = 1");
+//        jdbcTemplate.update("INSERT INTO chat VALUES (1)");
+//        jdbcTemplate.update("""
+//            INSERT INTO link
+//            VALUES (?, ?, ?, ?)
+//            """, 1L, "test-url", OffsetDateTime.now(), OffsetDateTime.now());
+//        jdbcTemplate.update("""
+//            INSERT INTO chat_link
+//            VALUES (1, 1)
+//            """);
+        Link testLink = TestData.testLinkDtoFirst();
+        chatDao.add(1L);
+        Long linkId = linkDao.add(testLink);
+        testLink.setId(linkId);
+        underTest.add(1L, linkId);
+        final List<Long> findChats = underTest.findChatsByLink(testLink);
         Assertions.assertEquals(1L, findChats.size());
         Assertions.assertEquals(1L, findChats.get(0));
     }
@@ -146,20 +170,23 @@ public class JdbcChatLinkDaoTest extends IntegrationTest {
     @Transactional
     @Rollback
     void isLinkPresentTest() {
-        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
-        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
-        jdbcTemplate.update("DELETE FROM link WHERE id = 1");
-        jdbcTemplate.update("INSERT INTO chat VALUES (1)");
-        jdbcTemplate.update("""
-            INSERT INTO link
-            VALUES (?, ?, ?, ?)
-            """, 1L, "test-url", OffsetDateTime.now(), OffsetDateTime.now());
-        jdbcTemplate.update("""
-            INSERT INTO chat_link
-            VALUES (1, 1)
-            """);
-        Link link = TestData.testLinkDtoFirst();
-        link.setId(1L);
-        Assertions.assertTrue(underTest.isLinkPresent(link));
+//        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
+//        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
+//        jdbcTemplate.update("DELETE FROM link WHERE id = 1");
+//        jdbcTemplate.update("INSERT INTO chat VALUES (1)");
+//        jdbcTemplate.update("""
+//            INSERT INTO link
+//            VALUES (?, ?, ?, ?)
+//            """, 1L, "test-url", OffsetDateTime.now(), OffsetDateTime.now());
+//        jdbcTemplate.update("""
+//            INSERT INTO chat_link
+//            VALUES (1, 1)
+//            """);
+        Link testLink = TestData.testLinkDtoFirst();
+        chatDao.add(1L);
+        Long linkId = linkDao.add(testLink);
+        testLink.setId(linkId);
+        underTest.add(1L, linkId);
+        Assertions.assertTrue(underTest.isLinkPresent(testLink));
     }
 }

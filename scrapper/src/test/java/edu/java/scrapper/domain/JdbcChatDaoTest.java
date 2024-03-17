@@ -2,6 +2,7 @@ package edu.java.scrapper.domain;
 
 import edu.java.domain.chat.ChatMapper;
 import edu.java.domain.chat.JdbcChatDao;
+import edu.java.domain.chat_link.JdbcChatLinkDao;
 import edu.java.domain.dto.Chat;
 import edu.java.scrapper.IntegrationTest;
 import org.junit.jupiter.api.Assertions;
@@ -18,48 +19,50 @@ import java.util.Optional;
 public class JdbcChatDaoTest extends IntegrationTest {
 
     private final JdbcChatDao underTest;
-    private final JdbcTemplate jdbcTemplate;
+    private final JdbcChatLinkDao chatLinkDao;
     private final ChatMapper chatMapper = new ChatMapper();
 
     @Autowired
-    public JdbcChatDaoTest(JdbcChatDao underTest, JdbcTemplate jdbcTemplate) {
+    public JdbcChatDaoTest(JdbcChatDao underTest, JdbcChatLinkDao jdbcChatLinkDao) {
         this.underTest = underTest;
-        this.jdbcTemplate = jdbcTemplate;
+        chatLinkDao = jdbcChatLinkDao;
     }
 
     @Test
     @Transactional
     @Rollback
     void addTest() {
-        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
-        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
+        //jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
+        //jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
         underTest.add(1L);
-        Chat chat = jdbcTemplate.queryForObject("SELECT * FROM chat WHERE id = 1", chatMapper);
-        assert chat != null;
-        Assertions.assertEquals(1L, chat.getId());
+        Optional<Chat> chat = underTest.find(1L);
+        Assertions.assertTrue(chat.isPresent());
+        Assertions.assertEquals(1L, chat.get().getId());
     }
 
     @Test
     @Transactional
     @Rollback
     void removeTest() {
-        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
-        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
+//        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
+//        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
         underTest.add(1L);
         boolean result = underTest.remove(1L);
-        Integer rowCount = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM chat WHERE id = 1", Integer.class);
-        Assertions.assertEquals(rowCount, 0);
+        Optional<Chat> chat = underTest.find(1L);
+        // Integer rowCount = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM chat WHERE id = 1", Integer.class);
+        //Assertions.assertEquals(rowCount, 0);
         Assertions.assertTrue(result);
+        Assertions.assertTrue(chat.isEmpty());
     }
 
     @Test
     @Transactional
     @Rollback
     void findAllTest() {
-        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
-        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
-        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 2");
-        jdbcTemplate.update("DELETE FROM chat WHERE id = 2");
+//        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
+//        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
+//        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 2");
+//        jdbcTemplate.update("DELETE FROM chat WHERE id = 2");
         underTest.add(1L);
         underTest.add(2L);
         List<Long> chats = underTest.findAll().stream().map(Chat::getId).toList();
@@ -70,8 +73,8 @@ public class JdbcChatDaoTest extends IntegrationTest {
     @Transactional
     @Rollback
     void findExistChatTestShouldReturnChat() {
-        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
-        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
+//        jdbcTemplate.update("DELETE FROM chat_link WHERE chat_id = 1");
+//        jdbcTemplate.update("DELETE FROM chat WHERE id = 1");
         underTest.add(1L);
         Optional<Chat> chat = underTest.find(1L);
         Assertions.assertEquals(1L, chat.get().getId());
