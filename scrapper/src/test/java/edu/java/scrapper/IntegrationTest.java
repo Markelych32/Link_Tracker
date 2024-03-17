@@ -10,6 +10,7 @@ import liquibase.exception.LiquibaseException;
 import liquibase.resource.DirectoryResourceAccessor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Testcontainers
+@SpringBootTest
 public abstract class IntegrationTest {
     public static PostgreSQLContainer<?> POSTGRES;
 
