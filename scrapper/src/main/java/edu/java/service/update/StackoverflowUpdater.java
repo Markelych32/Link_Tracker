@@ -1,7 +1,5 @@
 package edu.java.service.update;
 
-import edu.java.client.BotClient;
-import edu.java.controller.dto.response.LinkUpdate;
 import edu.java.domain.dto.Link;
 import edu.java.service.chat.ChatService;
 import edu.java.service.link.LinkService;
@@ -19,7 +17,7 @@ public class StackoverflowUpdater implements LinkUpdater {
     private final LinkService linkService;
     private final ChatService chatService;
     private final StackOverflowClient stackOverflowClient;
-   // private final BotClient botClient;
+    // private final BotClient botClient;
 
     @Override
     public void update(Link link) {
