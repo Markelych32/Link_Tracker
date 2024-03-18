@@ -1,4 +1,4 @@
-package edu.java.bot.controller;
+package edu.java.bot.processor;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ParseMode;

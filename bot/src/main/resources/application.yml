@@ -1,6 +1,9 @@
 app:
   telegram-token: ${TELEGRAM_API_KEY}
 
+client:
+  base-url: ${SCRAPPER_CLIENT_BASE_URL}
+
 spring:
   application:
     name: bot
@@ -14,8 +17,15 @@ spring:
     hibernate:
       ddl-auto: create
     show-sql: true
+
 server:
   port: 8090
 
 logging:
   config: classpath:log4j2-plain.xml
+springdoc:
+  swagger-ui:
+    path: /swagger-ui
+
+
+
