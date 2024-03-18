@@ -9,6 +9,9 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.DirectoryResourceAccessor;
 import org.springframework.boot.test.context.SpringBootTest;
+import lombok.SneakyThrows;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -32,13 +35,9 @@ public abstract class IntegrationTest {
             .withUsername("postgres")
             .withPassword("postgres");
         POSTGRES.start();
-
-        try {
-            runMigrations(POSTGRES);
-        } catch (SQLException | LiquibaseException | FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        runMigrations(POSTGRES);
     }
+
 
     @DynamicPropertySource
     static void jdbcProperties(DynamicPropertyRegistry registry) {
@@ -50,6 +49,15 @@ public abstract class IntegrationTest {
     private static void runMigrations(JdbcDatabaseContainer<?> c)
         throws SQLException, LiquibaseException, FileNotFoundException {
         Connection connection = POSTGRES.createConnection("");
+
+    @SneakyThrows
+    private static void runMigrations(JdbcDatabaseContainer<?> c) {
+        Connection connection = DriverManager.getConnection(
+            c.getJdbcUrl(),
+            c.getUsername(),
+            c.getPassword()
+        );
+
         Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(
             new JdbcConnection(connection));
         Path changelogPath = new File(".").toPath().toAbsolutePath().getParent().getParent().resolve("migrations");
