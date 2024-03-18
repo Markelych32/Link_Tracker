@@ -10,10 +10,15 @@ import edu.java.scrapper.TestData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
+@SpringBootTest
 public class JdbcChatLinkDaoTest extends IntegrationTest {
 
     private static final ChatLinkMapper MAPPER = new ChatLinkMapper();
@@ -21,9 +26,11 @@ public class JdbcChatLinkDaoTest extends IntegrationTest {
     @Autowired
     JdbcChatLinkDao underTest;
     @Autowired
-    JdbcLinkDao linkDao;
+    private JdbcTemplate jdbcTemplate;
 
     @Test
+    @Transactional
+    @Rollback
     void addTest() {
         jdbcTemplate.update("INSERT INTO chat VALUES (1)");
         jdbcTemplate.update(
@@ -42,6 +49,8 @@ public class JdbcChatLinkDaoTest extends IntegrationTest {
     }
 
     @Test
+    @Transactional
+    @Rollback
     void findTest() {
         jdbcTemplate.update("INSERT INTO chat VALUES (1)");
         jdbcTemplate.update(
@@ -59,6 +68,8 @@ public class JdbcChatLinkDaoTest extends IntegrationTest {
     }
 
     @Test
+    @Transactional
+    @Rollback
     void findAllTest() {
         jdbcTemplate.update("INSERT INTO chat VALUES (1)");
         jdbcTemplate.update(
@@ -76,6 +87,8 @@ public class JdbcChatLinkDaoTest extends IntegrationTest {
     }
 
     @Test
+    @Transactional
+    @Rollback
     void removeTest() {
         Link link = new Link(
             1L,
@@ -98,6 +111,8 @@ public class JdbcChatLinkDaoTest extends IntegrationTest {
     }
 
     @Test
+    @Transactional
+    @Rollback
     void findChatsByLinkTest() {
         Link link = new Link(
             1L,
@@ -120,6 +135,8 @@ public class JdbcChatLinkDaoTest extends IntegrationTest {
     }
 
     @Test
+    @Transactional
+    @Rollback
     void isLinkPresentTest() {
         Link link = new Link(
             1L,

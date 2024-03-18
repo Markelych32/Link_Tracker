@@ -8,12 +8,7 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.DirectoryResourceAccessor;
-import org.junit.jupiter.api.BeforeEach;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -25,14 +20,9 @@ import java.sql.SQLException;
 
 @Testcontainers
 @SpringBootTest
-@Transactional
 public abstract class IntegrationTest {
 
-    @ServiceConnection
     static PostgreSQLContainer<?> POSTGRES;
-
-    @Autowired
-    protected JdbcTemplate jdbcTemplate;
 
     static {
         POSTGRES = new PostgreSQLContainer<>("postgres:16")
@@ -46,11 +36,6 @@ public abstract class IntegrationTest {
         } catch (SQLException | LiquibaseException | FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @BeforeEach
-    public void restartIdentity() {
-        jdbcTemplate.update("TRUNCATE chat_link RESTART IDENTITY");
     }
 
     private static void runMigrations(JdbcDatabaseContainer<?> c)

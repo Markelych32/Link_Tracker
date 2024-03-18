@@ -8,18 +8,27 @@ import edu.java.scrapper.TestData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
+@SpringBootTest
 public class JdbcLinkDaoTest extends IntegrationTest {
 
     private static final LinkMapper LINK_MAPPER = new LinkMapper();
 
     @Autowired
     JdbcLinkDao underTest;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Test
+    @Transactional
+    @Rollback
     void addTest() {
         Link link = TestData.testLinkDtoFirst();
         underTest.add(link);
@@ -28,6 +37,8 @@ public class JdbcLinkDaoTest extends IntegrationTest {
     }
 
     @Test
+    @Transactional
+    @Rollback
     void removeTest() {
         Link link = TestData.testLinkDtoFirst();
         jdbcTemplate.update(
@@ -43,6 +54,8 @@ public class JdbcLinkDaoTest extends IntegrationTest {
     }
 
     @Test
+    @Transactional
+    @Rollback
     void findAllTest() {
         Link link1 = TestData.testLinkDtoFirst();
         Link link2 = TestData.testLinkDtoSecond();
@@ -60,6 +73,8 @@ public class JdbcLinkDaoTest extends IntegrationTest {
     }
 
     @Test
+    @Transactional
+    @Rollback
     void findTest() {
         Link link = TestData.testLinkDtoFirst();
         jdbcTemplate.update(
@@ -74,6 +89,8 @@ public class JdbcLinkDaoTest extends IntegrationTest {
     }
 
     @Test
+    @Transactional
+    @Rollback
     void findAllByChat() {
         Link link = new Link(
             1L,
@@ -95,6 +112,8 @@ public class JdbcLinkDaoTest extends IntegrationTest {
     }
 
     @Test
+    @Transactional
+    @Rollback
     void updateTest() {
         Link link = TestData.testLinkDtoFirst();
         Link newLink = new Link();

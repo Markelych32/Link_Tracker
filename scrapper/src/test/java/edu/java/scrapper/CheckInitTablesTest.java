@@ -2,6 +2,7 @@ package edu.java.scrapper;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -10,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@SpringBootTest
 public class CheckInitTablesTest extends IntegrationTest {
     @Test
     void checkDatabaseAfterMigrations() throws SQLException {

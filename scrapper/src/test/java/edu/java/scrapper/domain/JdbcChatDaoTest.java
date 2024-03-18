@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -20,8 +21,12 @@ public class JdbcChatDaoTest extends IntegrationTest {
 
     @Autowired
     JdbcChatDao underTest;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Test
+    @Transactional
+    @Rollback
     void addTest() {
         underTest.add(1L);
         Optional<Chat> actualResult = jdbcTemplate.query("SELECT id FROM chat", CHAT_MAPPER).stream().findFirst();
@@ -30,6 +35,8 @@ public class JdbcChatDaoTest extends IntegrationTest {
     }
 
     @Test
+    @Transactional
+    @Rollback
     void removeTest() {
         jdbcTemplate.update("INSERT INTO chat VALUES (1)");
         boolean actualResult = underTest.remove(1L);
@@ -39,6 +46,8 @@ public class JdbcChatDaoTest extends IntegrationTest {
     }
 
     @Test
+    @Transactional
+    @Rollback
     void findAllTest() {
         jdbcTemplate.update("INSERT INTO chat VALUES (1), (2)");
         List<Long> actualResult = underTest.findAll().stream().map(Chat::getId).toList();
