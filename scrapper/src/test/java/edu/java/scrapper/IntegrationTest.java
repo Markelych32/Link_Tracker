@@ -61,3 +61,4 @@ public abstract class IntegrationTest {
         liquibase.update(new Contexts(), new LabelExpression());
     }
 }
+
