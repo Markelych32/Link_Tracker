@@ -1,4 +1,4 @@
-package edu.java.scrapper.domain;
+package edu.java.scrapper.domain.chat;
 
 import edu.java.domain.chat.ChatMapper;
 import edu.java.domain.chat.JdbcChatDao;

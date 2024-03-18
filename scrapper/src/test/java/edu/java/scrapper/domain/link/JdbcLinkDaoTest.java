@@ -1,4 +1,4 @@
-package edu.java.scrapper.domain;
+package edu.java.scrapper.domain.link;
 
 import edu.java.domain.dto.Link;
 import edu.java.domain.link.JdbcLinkDao;
