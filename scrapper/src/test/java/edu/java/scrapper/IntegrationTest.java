@@ -8,6 +8,7 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.DirectoryResourceAccessor;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -36,16 +37,11 @@ public abstract class IntegrationTest {
             .withUsername("postgres")
             .withPassword("postgres");
         POSTGRES.start();
-
-        try {
-            runMigrations(POSTGRES);
-        } catch (SQLException | LiquibaseException | FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        runMigrations(POSTGRES);
     }
 
-    private static void runMigrations(JdbcDatabaseContainer<?> c)
-        throws SQLException, LiquibaseException, FileNotFoundException {
+    @SneakyThrows
+    private static void runMigrations(JdbcDatabaseContainer<?> c) {
         Connection connection = DriverManager.getConnection(
             c.getJdbcUrl(),
             c.getUsername(),
