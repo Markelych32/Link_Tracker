@@ -48,7 +48,6 @@ public class JdbcLinkService implements LinkService {
         link.setLastUpdate(OffsetDateTime.now());
         link.setLastCheck(OffsetDateTime.now());
         link.setUrl(linkUrl);
-        link.setLastCheck(OffsetDateTime.now());
         Long linkId = linkDao.add(link);
         chatLinkDao.add(tgChatId, linkId);
         link.setId(linkId);
@@ -63,7 +62,7 @@ public class JdbcLinkService implements LinkService {
         }
         final String linkUrl = removeLinkRequest.getUrl();
         final Optional<Link> findLink = linkDao.find(linkUrl);
-        if (linkDao.find(linkUrl).isEmpty()) {
+        if (findLink.isEmpty()) {
             throw new LinkNotFoundByUrlException();
         }
         chatLinkDao.remove(tgChatId, findLink.get());
@@ -84,7 +83,7 @@ public class JdbcLinkService implements LinkService {
             .stream()
             .filter(
                 link -> ChronoUnit.SECONDS.between(
-                    OffsetDateTime.now(), link.getLastCheck()
+                    link.getLastCheck(), OffsetDateTime.now()
                 ) >= seconds
             ).toList();
     }
