@@ -21,6 +21,7 @@ public class GithubUpdater implements LinkUpdater {
     private final GithubClient githubClient;
     private final BotClient botClient;
 
+
     @Override
     public void update(Link link) {
         URI uri = URI.create(link.getUrl());
