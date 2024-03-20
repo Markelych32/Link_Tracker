@@ -6,6 +6,7 @@ import edu.java.service.link.LinkService;
 import edu.java.service.update.LinkUpdater;
 import java.net.URI;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -24,8 +25,9 @@ public class LinkUpdaterScheduler {
     //@Value("#{@scheduler.seconds()}")
     private static final Long SECONDS = 60L;
 
-    @Scheduled(fixedDelayString = "#{@scheduler.interval()}")
+    @Scheduled(fixedDelayString = "${app.scheduler.interval}", timeUnit = TimeUnit.SECONDS)
     public void update() {
+        log.info("The Link was Update");
         List<Link> oldLinks = linkService.findOldLinks(SECONDS);
         for (Link link : oldLinks) {
             LinkUpdater linkUpdate = linkUpdaters.stream()

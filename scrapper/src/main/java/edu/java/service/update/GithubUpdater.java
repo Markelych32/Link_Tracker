@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class GithubUpdater implements LinkUpdater {
 
+    private static final int NUM_OF_AUTHOR = 2;
+    private static final int NUM_OF_REPO = 3;
+
     private final LinkService linkService;
     private final ChatService chatService;
     private final GithubClient githubClient;
@@ -25,8 +28,8 @@ public class GithubUpdater implements LinkUpdater {
     public void update(Link link) {
         URI uri = URI.create(link.getUrl());
         String[] path = uri.getPath().split("/");
-        RepositoryResponse response = githubClient.fetchRepository(path[2], path[3]);
-        if (link.getLastUpdate() == null || response.updatedAt().isAfter(link.getLastUpdate())) {
+        RepositoryResponse response = githubClient.fetchRepository(path[NUM_OF_AUTHOR], path[NUM_OF_REPO]);
+        if (link.getLastCheck() == null || response.updatedAt().isAfter(link.getLastCheck())) {
             link.setLastUpdate(response.updatedAt());
             link.setLastCheck(OffsetDateTime.now());
             linkService.update(link);
