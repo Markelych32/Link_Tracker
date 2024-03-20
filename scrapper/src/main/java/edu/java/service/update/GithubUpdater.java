@@ -21,12 +21,11 @@ public class GithubUpdater implements LinkUpdater {
     private final GithubClient githubClient;
     private final BotClient botClient;
 
-
     @Override
     public void update(Link link) {
         URI uri = URI.create(link.getUrl());
         String[] path = uri.getPath().split("/");
-        RepositoryResponse response = githubClient.fetchRepository(path[1], path[2]);
+        RepositoryResponse response = githubClient.fetchRepository(path[2], path[3]);
         if (link.getLastUpdate() == null || response.updatedAt().isAfter(link.getLastUpdate())) {
             link.setLastUpdate(response.updatedAt());
             link.setLastCheck(OffsetDateTime.now());
@@ -46,6 +45,6 @@ public class GithubUpdater implements LinkUpdater {
 
     @Override
     public boolean support(URI link) {
-        return link.getHost().equals("github.com");
+        return link.getHost().equals("api.github.com");
     }
 }
