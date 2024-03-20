@@ -52,7 +52,7 @@ public class GithubClientTest extends IntegrationTest {
                         {
                             "id": 759504210,
                             "full_name": "Markelych32/Book_REST_API",
-                            "updated_at": "2024-02-18T19:11:30Z"
+                            "pushed_at": "2024-02-18T19:11:30Z"
                         }
                         """
                 )));

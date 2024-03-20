@@ -13,7 +13,7 @@ public interface LinkService {
 
     void update(Link link);
 
-    List<Link> findOldLinks(long seconds);
+    List<Link> findOldLinks(int seconds);
 
     ListLinksResponse listAll(long tgChatId);
 }

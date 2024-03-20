@@ -45,7 +45,6 @@ public class JdbcLinkService implements LinkService {
             return findLink.get();
         }
         Link link = new Link();
-        link.setLastUpdate(OffsetDateTime.now());
         link.setLastCheck(OffsetDateTime.now());
         link.setUrl(linkUrl);
         Long linkId = linkDao.add(link);
@@ -78,7 +77,7 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
-    public List<Link> findOldLinks(long seconds) {
+    public List<Link> findOldLinks(int seconds) {
         return linkDao.findAll()
             .stream()
             .filter(

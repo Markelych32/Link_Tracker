@@ -52,7 +52,8 @@ public class JdbcLinkDao implements LinkDao {
                 preparedStatement.setString(1, link.getUrl());
                 preparedStatement.setTimestamp(
                     COLUMN_NUM_OF_LAST_UPDATE,
-                    Timestamp.valueOf(link.getLastUpdate().atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime())
+                    //Timestamp.valueOf(link.getLastUpdate().atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime())
+                    null
                 );
                 preparedStatement.setTimestamp(
                     COLUMN_NUM_OF_LAST_CHECK,

@@ -10,14 +10,16 @@ import edu.java.service.link.LinkService;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class GithubUpdater implements LinkUpdater {
 
-    private static final int NUM_OF_AUTHOR = 2;
-    private static final int NUM_OF_REPO = 3;
+    private static final int NUM_OF_AUTHOR = 1;
+    private static final int NUM_OF_REPO = 2;
 
     private final LinkService linkService;
     private final ChatService chatService;
@@ -29,17 +31,20 @@ public class GithubUpdater implements LinkUpdater {
         URI uri = URI.create(link.getUrl());
         String[] path = uri.getPath().split("/");
         RepositoryResponse response = githubClient.fetchRepository(path[NUM_OF_AUTHOR], path[NUM_OF_REPO]);
-        if (link.getLastCheck() == null || response.updatedAt().isAfter(link.getLastCheck())) {
+        if (link.getLastUpdate() == null || response.updatedAt().isAfter(link.getLastCheck())) {
             link.setLastUpdate(response.updatedAt());
             link.setLastCheck(OffsetDateTime.now());
             linkService.update(link);
-            botClient.updateLink(
-                new LinkUpdate(
-                    link.getUrl(),
-                    String.format("link: %s is updated", link.getUrl()),
-                    chatService.findChatsByLink(link)
-                )
-            );
+            if (link.getLastUpdate() != null) {
+                log.info("Bot Client updating...");
+                botClient.updateLink(
+                    new LinkUpdate(
+                        link.getUrl(),
+                        String.format("link: %s is updated", link.getUrl()),
+                        chatService.findChatsByLink(link)
+                    )
+                );
+            }
         } else {
             link.setLastCheck(OffsetDateTime.now());
             linkService.update(link);
@@ -48,6 +53,6 @@ public class GithubUpdater implements LinkUpdater {
 
     @Override
     public boolean support(URI link) {
-        return link.getHost().equals("api.github.com");
+        return link.getHost().equals("github.com");
     }
 }
