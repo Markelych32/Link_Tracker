@@ -2,11 +2,9 @@ package edu.java.scrapper.domain.chat_link;
 
 import edu.java.domain.chat_link.ChatLinkMapper;
 import edu.java.domain.chat_link.JdbcChatLinkDao;
-import edu.java.domain.dto.ChatLink;
-import edu.java.domain.dto.Link;
-import edu.java.domain.link.JdbcLinkDao;
+import edu.java.domain.dto.jdbc.ChatLink;
+import edu.java.domain.dto.jdbc.Link;
 import edu.java.scrapper.IntegrationTest;
-import edu.java.scrapper.TestData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

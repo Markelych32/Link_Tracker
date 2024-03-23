@@ -2,15 +2,17 @@ package edu.java.service.update;
 
 import edu.java.client.BotClient;
 import edu.java.controller.dto.response.LinkUpdate;
-import edu.java.domain.dto.Link;
+import edu.java.domain.dto.jdbc.Link;
 import edu.java.github.GithubClient;
 import edu.java.github.RepositoryResponse;
 import edu.java.service.chat.ChatService;
+import edu.java.service.chat.JdbcChatService;
 import edu.java.service.link.LinkService;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,7 +24,7 @@ public class GithubUpdater implements LinkUpdater {
     private static final int NUM_OF_REPO = 2;
 
     private final LinkService linkService;
-    private final ChatService chatService;
+    private final JdbcChatService chatService;
     private final GithubClient githubClient;
     private final BotClient botClient;
 
@@ -37,13 +39,13 @@ public class GithubUpdater implements LinkUpdater {
             linkService.update(link);
             if (link.getLastUpdate() != null) {
                 log.info("Bot Client updating...");
-                botClient.updateLink(
-                    new LinkUpdate(
-                        link.getUrl(),
-                        String.format("link: %s is updated", link.getUrl()),
-                        chatService.findChatsByLink(link)
-                    )
-                );
+//                botClient.updateLink(
+//                    new LinkUpdate(
+//                        link.getUrl(),
+//                        String.format("link: %s is updated", link.getUrl()),
+//                        chatService.findChatsByLink(link)
+//                    )
+//                );
             }
         } else {
             link.setLastCheck(OffsetDateTime.now());
@@ -53,6 +55,10 @@ public class GithubUpdater implements LinkUpdater {
 
     @Override
     public boolean support(URI link) {
-        return link.getHost().equals("github.com");
+        try {
+            return link.getHost().equals("github.com");
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

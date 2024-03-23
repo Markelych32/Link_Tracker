@@ -4,7 +4,7 @@ import edu.java.controller.ScrapperController;
 import edu.java.controller.dto.request.AddLinkRequest;
 import edu.java.controller.dto.request.RemoveLinkRequest;
 import edu.java.controller.dto.response.ListLinksResponse;
-import edu.java.domain.dto.Link;
+import edu.java.domain.dto.jdbc.Link;
 import edu.java.scrapper.TestData;
 import edu.java.service.chat.JdbcChatService;
 import edu.java.service.link.JdbcLinkService;

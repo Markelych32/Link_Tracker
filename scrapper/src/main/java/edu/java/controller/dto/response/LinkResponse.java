@@ -1,6 +1,6 @@
 package edu.java.controller.dto.response;
 
-import edu.java.domain.dto.Link;
+import edu.java.domain.dto.jdbc.Link;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -2,8 +2,9 @@ package edu.java.service.update;
 
 import edu.java.client.BotClient;
 import edu.java.controller.dto.response.LinkUpdate;
-import edu.java.domain.dto.Link;
+import edu.java.domain.dto.jdbc.Link;
 import edu.java.service.chat.ChatService;
+import edu.java.service.chat.JdbcChatService;
 import edu.java.service.link.LinkService;
 import edu.java.stackOverflow.ItemResponse;
 import edu.java.stackOverflow.StackOverflowClient;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 public class StackoverflowUpdater implements LinkUpdater {
 
     private final LinkService linkService;
-    private final ChatService chatService;
+    private final JdbcChatService chatService;
     private final StackOverflowClient stackOverflowClient;
     private final BotClient botClient;
 
@@ -45,6 +46,10 @@ public class StackoverflowUpdater implements LinkUpdater {
 
     @Override
     public boolean support(URI link) {
-        return link.getHost().equals("stackoverflow.com");
+        try {
+            return link.getHost().equals("stackoverflow.com");
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

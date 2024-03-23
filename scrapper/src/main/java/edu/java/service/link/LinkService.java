@@ -3,7 +3,7 @@ package edu.java.service.link;
 import edu.java.controller.dto.request.AddLinkRequest;
 import edu.java.controller.dto.request.RemoveLinkRequest;
 import edu.java.controller.dto.response.ListLinksResponse;
-import edu.java.domain.dto.Link;
+import edu.java.domain.dto.jdbc.Link;
 import java.util.List;
 
 public interface LinkService {

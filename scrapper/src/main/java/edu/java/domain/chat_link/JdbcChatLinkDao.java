@@ -1,7 +1,7 @@
 package edu.java.domain.chat_link;
 
-import edu.java.domain.dto.ChatLink;
-import edu.java.domain.dto.Link;
+import edu.java.domain.dto.jdbc.ChatLink;
+import edu.java.domain.dto.jdbc.Link;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;

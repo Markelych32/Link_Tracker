@@ -2,7 +2,7 @@ package edu.java.service.chat;
 
 import edu.java.domain.chat.JdbcChatDao;
 import edu.java.domain.chat_link.JdbcChatLinkDao;
-import edu.java.domain.dto.Link;
+import edu.java.domain.dto.jdbc.Link;
 import edu.java.exception.ChatAlreadyExistException;
 import edu.java.exception.ChatNotFoundException;
 import java.util.List;

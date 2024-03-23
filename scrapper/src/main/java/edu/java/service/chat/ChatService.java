@@ -1,6 +1,6 @@
 package edu.java.service.chat;
 
-import edu.java.domain.dto.Link;
+import edu.java.domain.dto.jdbc.Link;
 import java.util.List;
 
 public interface ChatService {

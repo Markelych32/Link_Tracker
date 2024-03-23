@@ -4,8 +4,11 @@ import edu.java.controller.dto.request.AddLinkRequest;
 import edu.java.controller.dto.response.LinkResponse;
 import edu.java.controller.dto.response.ListLinksResponse;
 import edu.java.controller.dto.request.RemoveLinkRequest;
-import edu.java.domain.dto.Link;
+import edu.java.domain.chat.ChatEntity;
+import edu.java.domain.dto.jdbc.Link;
+import edu.java.domain.link.LinkEntity;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public final class TestData {
@@ -51,6 +54,15 @@ public final class TestData {
         link.setLastCheck(OffsetDateTime.now());
         return link;
     }
+    public static LinkEntity testLinkEntity1() {
+        return new LinkEntity(
+            1L,
+            "https://test1.com",
+            null,
+            null,
+            new ArrayList<>()
+        );
+    }
 
     public static Link testLinkDtoSecond() {
         Link link = new Link();
@@ -58,6 +70,14 @@ public final class TestData {
         link.setLastUpdate(OffsetDateTime.now());
         link.setLastCheck(OffsetDateTime.now());
         return link;
+    }
+
+    public static ChatEntity testChatEntity1() {
+        return new ChatEntity(1L, new ArrayList<>());
+    }
+
+    public static ChatEntity testChatEntity2() {
+        return new ChatEntity(2L, new ArrayList<>());
     }
 
 }
