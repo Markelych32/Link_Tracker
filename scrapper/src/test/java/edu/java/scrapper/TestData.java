@@ -54,12 +54,23 @@ public final class TestData {
         link.setLastCheck(OffsetDateTime.now());
         return link;
     }
+
     public static LinkEntity testLinkEntity1() {
         return new LinkEntity(
             1L,
             "https://test1.com",
             null,
             null,
+            new ArrayList<>()
+        );
+    }
+
+    public static LinkEntity testLinkEntity2() {
+        return new LinkEntity(
+            1L,
+            "https://test1.com",
+            OffsetDateTime.parse("2024-02-21T10:15:30+01:00"),
+            OffsetDateTime.parse("2024-03-23T10:15:30+01:00"),
             new ArrayList<>()
         );
     }

@@ -47,7 +47,8 @@ public class ScrapperController {
     public ResponseEntity<Void> deleteChat(
         @PathVariable @Min(1) Long id
     ) {
-        jdbcChatService.deleteChat(id);
+        jpaChatService.deleteChat(id);
+//        jdbcChatService.deleteChat(id);
         log.info("Чат успешно удален");
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -57,7 +58,8 @@ public class ScrapperController {
         @PathVariable("id") @Min(1) Long chatId
     ) {
         log.info("Ссылки успешно получены");
-        return new ResponseEntity<>(jdbcLinkService.listAll(chatId), HttpStatus.OK);
+        //return new ResponseEntity<>(jdbcLinkService.listAll(chatId), HttpStatus.OK);
+        return new ResponseEntity<>(jpaLinkService.listAll(chatId), HttpStatus.OK);
     }
 
     @PostMapping("/links/{id}")

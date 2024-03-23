@@ -2,6 +2,7 @@ package edu.java.service.link;
 
 import edu.java.controller.dto.request.AddLinkRequest;
 import edu.java.controller.dto.request.RemoveLinkRequest;
+import edu.java.controller.dto.response.LinkResponse;
 import edu.java.controller.dto.response.ListLinksResponse;
 import edu.java.domain.chat.ChatEntity;
 import edu.java.domain.dto.jdbc.Link;
@@ -13,25 +14,22 @@ import edu.java.repository.ChatRepository;
 import edu.java.repository.LinkRepository;
 import edu.java.service.chat.JpaChatService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class JpaLinkService implements LinkService {
     private final LinkRepository linkRepository;
     private final ChatRepository chatRepository;
-
-    private LinkEntity fromAddLinkRequestToLinkEntity(AddLinkRequest addLinkRequest) {
-        LinkEntity linkEntity = new LinkEntity();
-        linkEntity.setUrl(addLinkRequest.getUrl());
-        linkEntity.setLastCheck(OffsetDateTime.now());
-        return linkEntity;
-    }
 
     private Link fromLinkEntityToLink(LinkEntity linkEntity) {
         return new Link(
@@ -68,30 +66,69 @@ public class JpaLinkService implements LinkService {
     @Override
     public Link removeLink(Long tgChatId, RemoveLinkRequest removeLinkRequest) {
         Optional<ChatEntity> chatEntity = chatRepository.findById(tgChatId);
-        final String url = removeLinkRequest.getUrl();
         if (chatEntity.isEmpty()) {
             throw new ChatNotFoundException();
         }
+        final String url = removeLinkRequest.getUrl();
         Optional<LinkEntity> linkEntity = linkRepository.findByUrl(url);
-        if (chatEntity.get().getLinks().stream().noneMatch(l -> l.getUrl().equals(url)) || linkEntity.isEmpty()) {
+        if (linkEntity.isEmpty() || !chatEntity.get().getLinks().contains(linkEntity.get())) {
             throw new LinkNotFoundByUrlException();
         }
         linkEntity.get().deleteChat(chatEntity.get());
-        //linkRepository.delete(linkEntity.get());
-        return fromLinkEntityToLink(linkEntity.get());
+        if (linkEntity.get().getChats().isEmpty()) {
+            linkRepository.delete(linkEntity.get());
+            return fromLinkEntityToLink(linkEntity.get());
+        } else {
+            return fromLinkEntityToLink(linkRepository.save(linkEntity.get()));
+        }
     }
 
     @Override
     public void update(Link link) {
+        final String url = link.getUrl();
+        Optional<LinkEntity> optionalLinkEntity = linkRepository.findByUrl(url);
+        if (optionalLinkEntity.isEmpty()) {
+            throw new LinkNotFoundByUrlException();
+        }
+        LinkEntity linkEntity = optionalLinkEntity.get();
+        linkEntity.setLastUpdate(link.getLastUpdate());
+        linkEntity.setLastCheck(link.getLastCheck());
+        linkRepository.save(linkEntity);
     }
 
     @Override
     public List<Link> findOldLinks(int seconds) {
-        return null;
+        return linkRepository.findAll()
+            .stream()
+            .filter(
+                l -> ChronoUnit.SECONDS.between(
+                    l.getLastCheck(), OffsetDateTime.now()
+                ) >= seconds
+            ).map(l -> new Link(
+                l.getId(),
+                l.getUrl(),
+                l.getLastUpdate(),
+                l.getLastCheck()
+            ))
+            .toList();
     }
 
     @Override
     public ListLinksResponse listAll(long tgChatId) {
-        return null;
+        Optional<ChatEntity> optionalChatEntity = chatRepository.findById(tgChatId);
+        if (optionalChatEntity.isEmpty()) {
+            throw new ChatNotFoundException();
+        }
+        ListLinksResponse listLinksResponse = new ListLinksResponse();
+        listLinksResponse.setSize(optionalChatEntity.get().getLinks().size());
+        listLinksResponse.setLinks(new ArrayList<>());
+        for (LinkEntity linkEntity : optionalChatEntity.get().getLinks()) {
+            listLinksResponse.getLinks().add(new LinkResponse(
+                linkEntity.getId(),
+                linkEntity.getUrl()
+            ));
+            log.info(listLinksResponse.getLinks().toString());
+        }
+        return listLinksResponse;
     }
 }

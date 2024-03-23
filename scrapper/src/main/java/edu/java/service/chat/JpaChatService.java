@@ -10,7 +10,6 @@ import edu.java.repository.ChatRepository;
 import edu.java.repository.LinkRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +45,8 @@ public class JpaChatService implements ChatService {
             throw new ChatNotFoundException();
         }
         for (LinkEntity linkEntity : chatEntity.get().getLinks()) {
-            if (linkEntity.getChats().size() == 1) {
+            linkEntity.deleteChat(chatEntity.get());
+            if (linkEntity.getChats().isEmpty()) {
                 linkRepository.delete(linkEntity);
             }
         }
