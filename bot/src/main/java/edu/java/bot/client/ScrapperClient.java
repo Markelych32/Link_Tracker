@@ -55,8 +55,8 @@ public class ScrapperClient {
             .block();
     }
 
-    public LinkResponse addLink(Long tgChatId, AddLinkRequest addLinkRequest) {
-        return webClient.post()
+    public void addLink(Long tgChatId, AddLinkRequest addLinkRequest) {
+        webClient.post()
             .uri(GENERAL_PATH + SCRAPPER_API_LINKS, tgChatId)
             .bodyValue(addLinkRequest)
             .retrieve()

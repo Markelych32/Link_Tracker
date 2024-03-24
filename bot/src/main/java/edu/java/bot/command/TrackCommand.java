@@ -36,14 +36,14 @@ public class TrackCommand implements Command {
         Long tgChatId = update.message().chat().id();
         try {
             scrapperClient.addLink(tgChatId, new AddLinkRequest(originalMessage.split(" ")[1]));
+            return new SendMessage(
+                tgChatId, MESSAGE_LINK_IS_BEING_TRACKED_NOW
+            );
         } catch (WebClientResponseException ex) {
             return new SendMessage(
                 tgChatId,
                 Objects.requireNonNull(ex.getResponseBodyAs(ApiErrorResponse.class)).getDescription()
             );
         }
-        return new SendMessage(
-            tgChatId, MESSAGE_LINK_IS_BEING_TRACKED_NOW
-        );
     }
 }

@@ -3,43 +3,45 @@ package edu.java.bot.command;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
+import edu.java.bot.TestData;
 import edu.java.bot.client.ScrapperClient;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import edu.java.bot.controller.dto.request.AddLinkRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import java.util.Optional;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class TrackCommandTest {
-    private static Update update;
-    private static Message message;
-    private static Chat chat;
 
     @Mock
     ScrapperClient scrapperClient;
+    @Mock
+    private static Update update;
+    @Mock
+    private static Message message;
+    @Mock
+    private static Chat chat;
     @InjectMocks
     TrackCommand underTest;
 
-    @BeforeAll
-    public static void mockInit() {
-        update = mock(Update.class);
-        message = mock(Message.class);
-        chat = mock(Chat.class);
-    }
-
     @Test
-    public void notTrackedLinkShouldBeTracked() {
-    }
-
-    @Test
-    public void userWithTrackStateShouldNotify() {
+    public void afterTrackingLinkShouldWriteMessage() {
+        final Long chatId = TestData.TEST_ID;
+        when(update.message()).thenReturn(message);
+        when(message.text()).thenReturn("/track test");
+        when(message.chat()).thenReturn(chat);
+        when(chat.id()).thenReturn(chatId);
+        doNothing().when(scrapperClient).addLink(anyLong(), ArgumentMatchers.any(AddLinkRequest.class));
+        final String expectedResult = "The Link is now being tracked.";
+        final String actualResult = underTest.handle(update).getParameters().get("text").toString();
+        assertEquals(expectedResult, actualResult);
     }
 
     @Test
@@ -47,7 +49,7 @@ public class TrackCommandTest {
         String actualCommand = underTest.command();
         String expectedCommand = "/track";
 
-        Assertions.assertEquals(actualCommand, expectedCommand);
+        assertEquals(actualCommand, expectedCommand);
     }
 
     @Test
@@ -55,6 +57,6 @@ public class TrackCommandTest {
         String actualDescription = underTest.description();
         String expectedDescription = "Start track the link";
 
-        Assertions.assertEquals(actualDescription, expectedDescription);
+        assertEquals(actualDescription, expectedDescription);
     }
 }
