@@ -3,8 +3,11 @@ package edu.java.bot.command;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import edu.java.bot.TestData;
 import edu.java.bot.client.ScrapperClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -18,29 +21,36 @@ import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 public class StartCommandTest {
-    private static Update update;
-    private static Message message;
-    private static Chat chat;
 
     @Mock
     ScrapperClient scrapperClient;
+    @Mock
+    Update update;
+    @Mock
+    Message message;
+    @Mock
+    Chat chat;
     @InjectMocks
     StartCommand underTest;
 
-    @BeforeAll
-    public static void mockInit() {
-        update = mock(Update.class);
-        message = mock(Message.class);
-        chat = mock(Chat.class);
+    @Test
+    void afterRegistrationShouldWriteCongratulationMessage() {
+        final Long chatId = TestData.TEST_ID;
+        when(update.message()).thenReturn(message);
+        when(message.chat()).thenReturn(chat);
+        when(chat.id()).thenReturn(chatId);
+        doNothing().when(scrapperClient).registerChat(anyLong());
+        final String expectedResult = """
+            Our Congratulations!
+            You have been registered.
+            Use command */help* to know what Bot can do.
+            """;
+        final String actualResult = underTest.handle(update).getParameters().get("text").toString();
+        Assertions.assertEquals(expectedResult, actualResult);
     }
 
     @Test
-    public void registrationNewUserShouldAskNameAndCongratulate() {
-
-    }
-
-    @Test
-    public void commandOfStartCommandShouldBeRight() {
+    void commandOfStartCommandShouldBeRight() {
         String actualCommand = underTest.command();
         String expectedCommand = "/start";
 
@@ -48,7 +58,7 @@ public class StartCommandTest {
     }
 
     @Test
-    public void descriptionShouldBeRight() {
+    void descriptionShouldBeRight() {
         String actualDescription = underTest.description();
         String expectedDescription = "Register new User";
 

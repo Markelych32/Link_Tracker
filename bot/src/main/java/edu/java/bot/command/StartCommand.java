@@ -37,12 +37,12 @@ public class StartCommand implements Command {
         Long tgChatId = update.message().chat().id();
         try {
             scrapperClient.registerChat(tgChatId);
+            return new SendMessage(tgChatId, CONGRATULATION_MESSAGE).parseMode(ParseMode.Markdown);
         } catch (WebClientResponseException e) {
             return new SendMessage(
                 tgChatId,
                 e.getResponseBodyAsString()
             );
         }
-        return new SendMessage(tgChatId, CONGRATULATION_MESSAGE).parseMode(ParseMode.Markdown);
     }
 }
