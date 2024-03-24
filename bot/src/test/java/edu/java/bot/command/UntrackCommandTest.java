@@ -8,7 +8,9 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import edu.java.bot.TestData;
 import edu.java.bot.client.ScrapperClient;
+import edu.java.bot.controller.dto.request.AddLinkRequest;
 import edu.java.bot.controller.dto.request.RemoveLinkRequest;
+import edu.java.bot.controller.dto.response.LinkResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,7 +40,7 @@ public class UntrackCommandTest {
         when(message.chat()).thenReturn(chat);
         when(message.text()).thenReturn("/untrack test");
         when(chat.id()).thenReturn(chatId);
-        doNothing().when(scrapperClient).deleteLink(anyLong(), ArgumentMatchers.any(RemoveLinkRequest.class));
+        when(scrapperClient.deleteLink(anyLong(), ArgumentMatchers.any(RemoveLinkRequest.class))).thenReturn(new LinkResponse());
         final String expectedResult = "The link is no longer tracked.";
         final String actualResult = underTest.handle(update).getParameters().get("text").toString();
         Assertions.assertEquals(expectedResult, actualResult);

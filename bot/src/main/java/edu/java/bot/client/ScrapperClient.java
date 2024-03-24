@@ -55,8 +55,8 @@ public class ScrapperClient {
             .block();
     }
 
-    public void addLink(Long tgChatId, AddLinkRequest addLinkRequest) {
-        webClient.post()
+    public LinkResponse addLink(Long tgChatId, AddLinkRequest addLinkRequest) {
+        return webClient.post()
             .uri(GENERAL_PATH + SCRAPPER_API_LINKS, tgChatId)
             .bodyValue(addLinkRequest)
             .retrieve()
@@ -64,8 +64,8 @@ public class ScrapperClient {
             .block();
     }
 
-    public void deleteLink(Long tgChatId, RemoveLinkRequest removeLinkRequest) {
-        webClient.method(HttpMethod.DELETE)
+    public LinkResponse deleteLink(Long tgChatId, RemoveLinkRequest removeLinkRequest) {
+        return webClient.method(HttpMethod.DELETE)
             .uri(GENERAL_PATH + SCRAPPER_API_LINKS, tgChatId)
             .bodyValue(removeLinkRequest)
             .retrieve()
