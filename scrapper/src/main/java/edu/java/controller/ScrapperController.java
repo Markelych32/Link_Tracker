@@ -4,10 +4,8 @@ import edu.java.controller.dto.request.AddLinkRequest;
 import edu.java.controller.dto.request.RemoveLinkRequest;
 import edu.java.controller.dto.response.LinkResponse;
 import edu.java.controller.dto.response.ListLinksResponse;
-import edu.java.service.chat.JdbcChatService;
-import edu.java.service.chat.JpaChatService;
-import edu.java.service.link.JdbcLinkService;
-import edu.java.service.link.JpaLinkService;
+import edu.java.service.chat.ChatService;
+import edu.java.service.link.LinkService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -28,17 +26,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class ScrapperController {
 
-    private final JdbcLinkService jdbcLinkService;
-    private final JdbcChatService jdbcChatService;
-    private final JpaChatService jpaChatService;
-    private final JpaLinkService jpaLinkService;
+    private final LinkService linkService;
+    private final ChatService chatService;
 
     @PostMapping("/tg-chat/{id}")
     public ResponseEntity<Void> registerChat(
         @PathVariable @Min(1) Long id
     ) {
-        //jdbcChatService.registerChat(id);
-        jpaChatService.registerChat(id);
+        chatService.registerChat(id);
         log.info("Чат зарегистрирован");
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -47,8 +42,7 @@ public class ScrapperController {
     public ResponseEntity<Void> deleteChat(
         @PathVariable @Min(1) Long id
     ) {
-        jpaChatService.deleteChat(id);
-//        jdbcChatService.deleteChat(id);
+        chatService.deleteChat(id);
         log.info("Чат успешно удален");
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -58,8 +52,7 @@ public class ScrapperController {
         @PathVariable("id") @Min(1) Long chatId
     ) {
         log.info("Ссылки успешно получены");
-        //return new ResponseEntity<>(jdbcLinkService.listAll(chatId), HttpStatus.OK);
-        return new ResponseEntity<>(jpaLinkService.listAll(chatId), HttpStatus.OK);
+        return new ResponseEntity<>(linkService.listAll(chatId), HttpStatus.OK);
     }
 
     @PostMapping("/links/{id}")
@@ -69,8 +62,7 @@ public class ScrapperController {
     ) {
         log.info("Ссылка успешно добавлена");
         return new ResponseEntity<>(
-            //LinkResponse.linkDtoToLinkResponse(jdbcLinkService.addLink(chatId, addLinkRequest)),
-            LinkResponse.linkDtoToLinkResponse(jpaLinkService.addLink(chatId, addLinkRequest)),
+            LinkResponse.linkDtoToLinkResponse(linkService.addLink(chatId, addLinkRequest)),
             HttpStatus.OK
         );
     }
@@ -82,8 +74,7 @@ public class ScrapperController {
     ) {
         log.info("Ссылка успешно удалена");
         return new ResponseEntity<>(
-            LinkResponse.linkDtoToLinkResponse(jpaLinkService.removeLink(chatId, removeLinkRequest)),
-            //LinkResponse.linkDtoToLinkResponse(jdbcLinkService.removeLink(chatId, removeLinkRequest)),
+            LinkResponse.linkDtoToLinkResponse(linkService.removeLink(chatId, removeLinkRequest)),
             HttpStatus.OK
         );
     }

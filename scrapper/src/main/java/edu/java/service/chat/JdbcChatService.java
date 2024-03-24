@@ -7,9 +7,7 @@ import edu.java.exception.ChatAlreadyExistException;
 import edu.java.exception.ChatNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-@Service
 @RequiredArgsConstructor
 public class JdbcChatService implements ChatService {
 

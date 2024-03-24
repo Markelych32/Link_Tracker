@@ -12,19 +12,15 @@ import edu.java.exception.LinkAlreadyRegisteredInChatException;
 import edu.java.exception.LinkNotFoundByUrlException;
 import edu.java.repository.ChatRepository;
 import edu.java.repository.LinkRepository;
-import edu.java.service.chat.JpaChatService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 
-@Service
 @RequiredArgsConstructor
 @Slf4j
 public class JpaLinkService implements LinkService {
@@ -41,6 +37,7 @@ public class JpaLinkService implements LinkService {
     }
 
     @Override
+    @Transactional
     public Link addLink(Long tgChatId, AddLinkRequest addLinkRequest) {
         Optional<ChatEntity> chatEntity = chatRepository.findById(tgChatId);
         final String url = addLinkRequest.getUrl();
@@ -64,6 +61,7 @@ public class JpaLinkService implements LinkService {
     }
 
     @Override
+    @Transactional
     public Link removeLink(Long tgChatId, RemoveLinkRequest removeLinkRequest) {
         Optional<ChatEntity> chatEntity = chatRepository.findById(tgChatId);
         if (chatEntity.isEmpty()) {
@@ -84,6 +82,7 @@ public class JpaLinkService implements LinkService {
     }
 
     @Override
+    @Transactional
     public void update(Link link) {
         final String url = link.getUrl();
         Optional<LinkEntity> optionalLinkEntity = linkRepository.findByUrl(url);
@@ -97,6 +96,7 @@ public class JpaLinkService implements LinkService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Link> findOldLinks(int seconds) {
         return linkRepository.findAll()
             .stream()
@@ -114,6 +114,7 @@ public class JpaLinkService implements LinkService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ListLinksResponse listAll(long tgChatId) {
         Optional<ChatEntity> optionalChatEntity = chatRepository.findById(tgChatId);
         if (optionalChatEntity.isEmpty()) {

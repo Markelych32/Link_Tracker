@@ -2,8 +2,7 @@ package edu.java;
 
 import edu.java.domain.dto.jdbc.Link;
 import edu.java.exception.LinkNotFoundByUrlException;
-import edu.java.service.link.JdbcLinkService;
-import edu.java.service.link.LinkService;
+import edu.java.service.link.JpaLinkService;
 import edu.java.service.update.LinkUpdater;
 import java.net.URI;
 import java.util.List;
@@ -22,7 +21,7 @@ import org.springframework.stereotype.Component;
 public class LinkUpdaterScheduler {
 
     private final List<LinkUpdater> linkUpdaters;
-    private final JdbcLinkService linkService;
+    private final JpaLinkService linkService;
 
     @Value("${app.scheduler.seconds}")
     private int seconds;

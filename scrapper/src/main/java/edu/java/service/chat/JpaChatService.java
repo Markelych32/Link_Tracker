@@ -8,18 +8,18 @@ import edu.java.exception.ChatNotFoundException;
 import edu.java.exception.LinkNotFoundByUrlException;
 import edu.java.repository.ChatRepository;
 import edu.java.repository.LinkRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
-@Service
 @RequiredArgsConstructor
 public class JpaChatService implements ChatService {
     private final ChatRepository chatRepository;
     private final LinkRepository linkRepository;
 
     @Override
+    @Transactional
     public void registerChat(Long tgChatId) {
         if (chatRepository.existsById(tgChatId)) {
             throw new ChatAlreadyExistException();
@@ -30,6 +30,7 @@ public class JpaChatService implements ChatService {
     }
 
     @Override
+    @Transactional
     public List<Long> findChatsByLink(Link link) {
         Optional<LinkEntity> linkEntity = linkRepository.findById(link.getId());
         if (linkEntity.isEmpty()) {
@@ -39,6 +40,7 @@ public class JpaChatService implements ChatService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void deleteChat(Long tgChatId) {
         Optional<ChatEntity> chatEntity = chatRepository.findById(tgChatId);
         if (chatEntity.isEmpty()) {
