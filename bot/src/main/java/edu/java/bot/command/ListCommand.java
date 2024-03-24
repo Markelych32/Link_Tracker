@@ -5,8 +5,8 @@ import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.client.ScrapperClient;
 import edu.java.bot.controller.dto.response.LinkResponse;
-import java.util.stream.Collectors;
 import edu.java.bot.controller.dto.response.ListLinksResponse;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
