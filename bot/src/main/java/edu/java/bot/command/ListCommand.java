@@ -6,6 +6,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.client.ScrapperClient;
 import edu.java.bot.controller.dto.response.LinkResponse;
 import java.util.stream.Collectors;
+import edu.java.bot.controller.dto.response.ListLinksResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -36,15 +37,15 @@ public class ListCommand implements Command {
     @Override
     public SendMessage handle(Update update) {
         Long tgChatId = update.message().chat().id();
-        String trackedUrls = scrapperClient.getLinks(tgChatId)
+        final ListLinksResponse listLinksResponse = scrapperClient.getLinks(tgChatId);
+        if (listLinksResponse.getSize() == 0) {
+            return new SendMessage(tgChatId, MESSAGE_ABOUT_NO_TRACKED_LINKS).parseMode(ParseMode.Markdown);
+        }
+        String trackedUrls = listLinksResponse
             .getLinks()
             .stream()
             .map(LinkResponse::getUrl)
             .collect(Collectors.joining("\n"));
-        if (trackedUrls.isEmpty()) {
-            return new SendMessage(tgChatId, MESSAGE_ABOUT_NO_TRACKED_LINKS).parseMode(ParseMode.Markdown);
-        } else {
-            return new SendMessage(tgChatId, MESSAGE_ABOUT_TRACKED_LINKS + trackedUrls).parseMode(ParseMode.Markdown);
-        }
+        return new SendMessage(tgChatId, MESSAGE_ABOUT_TRACKED_LINKS + trackedUrls).parseMode(ParseMode.Markdown);
     }
 }
