@@ -64,8 +64,8 @@ public class ScrapperClient {
             .block();
     }
 
-    public LinkResponse deleteLink(Long tgChatId, RemoveLinkRequest removeLinkRequest) {
-        return webClient.method(HttpMethod.DELETE)
+    public void deleteLink(Long tgChatId, RemoveLinkRequest removeLinkRequest) {
+        webClient.method(HttpMethod.DELETE)
             .uri(GENERAL_PATH + SCRAPPER_API_LINKS, tgChatId)
             .bodyValue(removeLinkRequest)
             .retrieve()

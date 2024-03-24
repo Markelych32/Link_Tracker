@@ -19,7 +19,6 @@ public class UntrackCommand implements Command {
     private static final String COMMAND = "/untrack";
     private static final String DESCRIPTION = "Stop tracking link";
     private static final String MESSAGE_LINK_WAS_NOT_TRACKED = "This link was not tracked.";
-    private static final String MESSAGE_NAME_LINK_TO_UNTRACK = "Please, enter the link you want to untrack.";
     private static final String MESSAGE_LINK_IS_NOT_BEING_TRACKED_ANY_MORE = "The link is no longer tracked.";
 
     @Override

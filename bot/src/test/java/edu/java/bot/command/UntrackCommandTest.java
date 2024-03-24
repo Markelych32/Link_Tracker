@@ -3,46 +3,45 @@ package edu.java.bot.command;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
-import static org.mockito.Mockito.mock;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+import edu.java.bot.TestData;
 import edu.java.bot.client.ScrapperClient;
+import edu.java.bot.controller.dto.request.RemoveLinkRequest;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class UntrackCommandTest {
-    private static Update update;
-    private static Message message;
-    private static Chat chat;
 
     @Mock
     ScrapperClient scrapperClient;
+    @Mock
+    Chat chat;
+    @Mock
+    Update update;
+    @Mock
+    Message message;
     @InjectMocks
     UntrackCommand underTest;
 
-    @BeforeAll
-    public static void mockInit() {
-        update = mock(Update.class);
-        message = mock(Message.class);
-        chat = mock(Chat.class);
-    }
-
     @Test
-    public void neutralUserShouldAddLinkToUntrack() {
-
-    }
-
-    @Test
-    public void notTrackedLinkShouldNotBeUntracked() {
-
-    }
-
-    @Test
-    public void UntrackStateShouldUntrackLink() {
+    public void afterUntrackLinkShouldWriteMessage() {
+        final Long chatId = TestData.TEST_ID;
+        when(update.message()).thenReturn(message);
+        when(message.chat()).thenReturn(chat);
+        when(message.text()).thenReturn("/untrack test");
+        when(chat.id()).thenReturn(chatId);
+        doNothing().when(scrapperClient).deleteLink(anyLong(), ArgumentMatchers.any(RemoveLinkRequest.class));
+        final String expectedResult = "The link is no longer tracked.";
+        final String actualResult = underTest.handle(update).getParameters().get("text").toString();
+        Assertions.assertEquals(expectedResult, actualResult);
     }
 
     @Test
