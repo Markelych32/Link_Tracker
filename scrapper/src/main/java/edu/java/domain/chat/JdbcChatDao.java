@@ -20,7 +20,7 @@ public class JdbcChatDao implements ChatDao {
     private static final String FIND_SQL = "SELECT id FROM chat WHERE id = ?";
 
     private final JdbcTemplate jdbcTemplate;
-    private final ChatMapper chatRowMapper = new ChatMapper();
+    private final ChatMapper chatRowMapper;
 
     @Override
     public boolean add(Long tgChatId) {

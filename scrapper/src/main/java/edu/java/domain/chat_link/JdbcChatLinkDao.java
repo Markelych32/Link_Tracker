@@ -20,8 +20,7 @@ public class JdbcChatLinkDao implements ChatLinkDao {
     private static final String FIND_BY_LINK_SQL = "SELECT chat_id FROM chat_link WHERE link_id = ?";
 
     private final JdbcTemplate jdbcTemplate;
-
-    private final ChatLinkMapper chatLinkMapper = new ChatLinkMapper();
+    private final ChatLinkMapper chatLinkMapper;
 
     @Override
     public boolean add(Long chatId, Long linkId) {

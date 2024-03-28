@@ -37,7 +37,7 @@ public class JdbcLinkDao implements LinkDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final LinkMapper linkRowMapper = new LinkMapper();
+    private final LinkMapper linkRowMapper;
 
     private static final int COLUMN_NUM_OF_LAST_UPDATE = 2;
     private static final int COLUMN_NUM_OF_LAST_CHECK = 3;
@@ -52,7 +52,6 @@ public class JdbcLinkDao implements LinkDao {
                 preparedStatement.setString(1, link.getUrl());
                 preparedStatement.setTimestamp(
                     COLUMN_NUM_OF_LAST_UPDATE,
-                    //Timestamp.valueOf(link.getLastUpdate().atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime())
                     null
                 );
                 preparedStatement.setTimestamp(
