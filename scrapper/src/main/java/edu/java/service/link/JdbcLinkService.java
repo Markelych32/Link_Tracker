@@ -44,9 +44,9 @@ public class JdbcLinkService implements LinkService {
             chatLinkDao.add(tgChatId, findLink.get().getId());
             return findLink.get();
         }
-        Link link = new Link();
-        link.setLastCheck(OffsetDateTime.now());
-        link.setUrl(linkUrl);
+        Link link = new Link()
+            .setLastCheck(OffsetDateTime.now())
+            .setUrl(linkUrl);
         Long linkId = linkDao.add(link);
         chatLinkDao.add(tgChatId, linkId);
         link.setId(linkId);
