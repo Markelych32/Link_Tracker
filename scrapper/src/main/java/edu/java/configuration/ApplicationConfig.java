@@ -11,7 +11,9 @@ public record ApplicationConfig(
     @NotNull
     Scheduler scheduler
 ) {
-    public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull int seconds,
+    public record Scheduler(boolean enable,
+                            @NotNull Duration interval,
+                            @NotNull int seconds,
                             @NotNull Duration forceCheckDelay) {
     }
 }
