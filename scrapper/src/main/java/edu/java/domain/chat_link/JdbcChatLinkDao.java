@@ -22,22 +22,25 @@ public class JdbcChatLinkDao implements ChatLinkDao {
         "SELECT chat_id, link_id FROM chat_link WHERE chat_id = :chatId AND link_id = :linkId";
     private static final String FIND_BY_LINK_SQL = "SELECT chat_id FROM chat_link WHERE link_id = :linkId";
 
+    private static final String CHAT_ID_PARAMETER = "chatId";
+    private static final String LINK_ID_PARAMETER = "linkId";
+
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final ChatLinkMapper chatLinkMapper;
 
     @Override
     public boolean add(Long chatId, Long linkId) {
         SqlParameterSource namedParameters = new MapSqlParameterSource()
-            .addValue("chatId", chatId)
-            .addValue("linkId", linkId);
+            .addValue(CHAT_ID_PARAMETER, chatId)
+            .addValue(LINK_ID_PARAMETER, linkId);
         return namedParameterJdbcTemplate.update(ADD_SQL, namedParameters) > 0;
     }
 
     @Override
     public boolean remove(Long chatId, Link link) {
         SqlParameterSource namedParameters = new MapSqlParameterSource()
-            .addValue("chatId", chatId)
-            .addValue("linkId", link.getId());
+            .addValue(CHAT_ID_PARAMETER, chatId)
+            .addValue(LINK_ID_PARAMETER, link.getId());
         return namedParameterJdbcTemplate.update(REMOVE_SQL, namedParameters) > 0;
     }
 
@@ -50,8 +53,8 @@ public class JdbcChatLinkDao implements ChatLinkDao {
     public Optional<ChatLink> find(Long chatId, Long linkId) {
         try {
             SqlParameterSource namedParameters = new MapSqlParameterSource()
-                .addValue("chatId", chatId)
-                .addValue("linkId", linkId);
+                .addValue(CHAT_ID_PARAMETER, chatId)
+                .addValue(LINK_ID_PARAMETER, linkId);
             return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(
                 FIND_SQL,
                 namedParameters,
@@ -64,7 +67,7 @@ public class JdbcChatLinkDao implements ChatLinkDao {
 
     @Override
     public List<Long> findChatsByLink(Link link) {
-        SqlParameterSource namedParameters = new MapSqlParameterSource("linkId", link.getId());
+        SqlParameterSource namedParameters = new MapSqlParameterSource(LINK_ID_PARAMETER, link.getId());
         return namedParameterJdbcTemplate.queryForList(FIND_BY_LINK_SQL, namedParameters, Long.class);
     }
 

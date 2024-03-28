@@ -39,6 +39,8 @@ public class JdbcLinkDao implements LinkDao {
     private static final String UPDATE_SQL =
         "UPDATE link SET last_update = :lastUpdate, last_check = :lastCheck WHERE url = :url";
 
+    private static final String URL_PARAMETER = "url";
+
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -71,7 +73,7 @@ public class JdbcLinkDao implements LinkDao {
 
     @Override
     public boolean remove(String url) {
-        SqlParameterSource namedParameters = new MapSqlParameterSource("url", url);
+        SqlParameterSource namedParameters = new MapSqlParameterSource(URL_PARAMETER, url);
         return namedParameterJdbcTemplate.update(REMOVE_SQL, namedParameters) > 0;
     }
 
@@ -83,7 +85,7 @@ public class JdbcLinkDao implements LinkDao {
     @Override
     public Optional<Link> find(String url) {
         try {
-            SqlParameterSource namedParameters = new MapSqlParameterSource("url", url);
+            SqlParameterSource namedParameters = new MapSqlParameterSource(URL_PARAMETER, url);
             return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(
                 FIND_SQL,
                 namedParameters,
@@ -106,7 +108,7 @@ public class JdbcLinkDao implements LinkDao {
         SqlParameterSource namedParameters = new MapSqlParameterSource()
             .addValue("lastUpdate", link.getLastUpdate())
             .addValue("lastCheck", link.getLastCheck())
-            .addValue("url", link.getUrl());
+            .addValue(URL_PARAMETER, link.getUrl());
         namedParameterJdbcTemplate.update(UPDATE_SQL, namedParameters);
     }
 
