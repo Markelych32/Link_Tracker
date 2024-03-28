@@ -25,8 +25,8 @@ public class BotClient {
         this.clientConfig = clientConfig;
     }
 
-    public LinkUpdate updateLink(LinkUpdate linkUpdate) {
-        return webClient.post()
+    public void updateLink(LinkUpdate linkUpdate) {
+        webClient.post()
             .uri(BOT_API_V_1_0_UPDATES)
             .bodyValue(linkUpdate)
             .retrieve()
