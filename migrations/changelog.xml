@@ -8,5 +8,4 @@
     <changeSet id="init-tables" author="Solonchev">
         <sqlFile path="sql/init-tables.sql" relativeToChangelogFile="true"/>
     </changeSet>
-
 </databaseChangeLog>

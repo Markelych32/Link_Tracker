@@ -5,6 +5,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import edu.java.scrapper.IntegrationTest;
 import edu.java.stackOverflow.ItemResponse;
 import edu.java.stackOverflow.StackOverflowClient;
 import org.junit.jupiter.api.AfterAll;
@@ -17,7 +18,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.time.OffsetDateTime;
 
 @SpringBootTest
-public class StackOverflowClientTest {
+public class StackOverflowClientTest extends IntegrationTest {
     private static WireMockServer wireMockServer;
     private final WebClient.Builder webClientBuilder;
 

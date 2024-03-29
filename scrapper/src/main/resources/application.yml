@@ -1,12 +1,20 @@
 app:
   scheduler:
     enable: true
-    interval: 10s
+    interval: 10
+    seconds: 60
     force-check-delay: 10s
 
 spring:
   application:
     name: scrapper
+  liquibase:
+    enabled: false
+  datasource:
+    password: postgres
+    username: postgres
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5434/scrapper
 
 springdoc:
   swagger-ui:
@@ -21,5 +29,7 @@ server:
 
 logging:
   config: classpath:log4j2-plain.xml
+
 client:
   base-url: ${BOT_CLIENT_BASE_URL}
+

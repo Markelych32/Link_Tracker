@@ -1,40 +1,46 @@
 package edu.java.scrapper.controller;
 
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import edu.java.controller.ScrapperController;
 import edu.java.controller.dto.request.AddLinkRequest;
-import edu.java.controller.dto.response.LinkResponse;
-import edu.java.controller.dto.response.ListLinksResponse;
 import edu.java.controller.dto.request.RemoveLinkRequest;
+import edu.java.controller.dto.response.ListLinksResponse;
+import edu.java.domain.dto.Link;
 import edu.java.scrapper.TestData;
-import edu.java.service.ScrapperService;
+import edu.java.service.chat.JdbcChatService;
+import edu.java.service.link.JdbcLinkService;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 @ExtendWith(MockitoExtension.class)
-class ScrapperControllerTest {
+public class ScrapperControllerTest {
+
+    private static final String DEFAULT_URL = "/scrapper-api/v1.0";
+    private static final String CHAT_URL = "/tg-chat/{id}";
+    private static final String LINKS_URL = "/links/{id}";
 
     @Mock
-    private ScrapperService service;
+    private JdbcChatService chatService;
+    @Mock
+    private JdbcLinkService linkService;
     @InjectMocks
     private ScrapperController underTest;
 
@@ -48,57 +54,110 @@ class ScrapperControllerTest {
     }
 
     @Test
-    void registerChat() throws Exception {
-        mockMvc.perform(post("/scrapper-api/v1.0/tg-chat/{id}", 1L))
+    @DisplayName("Chat: Post; Correct Request")
+    @SneakyThrows
+    void registerChatWithValidParameters() {
+        final Long tgChatId = 1L;
+        mockMvc.perform(post(DEFAULT_URL + CHAT_URL, tgChatId))
             .andExpect(status().isOk());
-        verify(service, times(1)).saveChatById(1L);
+        verify(chatService, times(1)).registerChat(tgChatId);
     }
 
     @Test
-    void deleteChat() throws Exception {
-        mockMvc.perform(delete("/scrapper-api/v1.0/tg-chat/{id}", 1L))
-            .andExpect(status().isOk());
-        verify(service, times(1)).deleteChatById(1L);
+    @DisplayName("Chat: Post; Incorrect Request")
+    @SneakyThrows
+    void registerChatWithNotValidParameters() {
+        final Long tgChatId = -1L;
+        mockMvc.perform(post(DEFAULT_URL + CHAT_URL, tgChatId))
+            .andExpect(status().isBadRequest());
+        verify(chatService, times(0)).registerChat(tgChatId);
     }
 
     @Test
-    void deleteLink() throws Exception {
-        RemoveLinkRequest removeLinkRequest = TestData.testRemoveLinkRequest();
-        String removeLinkRequestJson = objectMapper.writeValueAsString(removeLinkRequest);
-        when(service.deleteLink(1L, removeLinkRequest)).thenReturn(new LinkResponse(1L, "google.com"));
+    @DisplayName("Chat: Delete; Correct Request")
+    @SneakyThrows
+    void deleteChatWithValidParameters() {
+        final Long tgChatId = 1L;
+        mockMvc.perform(delete(DEFAULT_URL + CHAT_URL, tgChatId)).andExpect(
+            status().isOk()
+        );
+        verify(chatService, times(1)).deleteChat(tgChatId);
+    }
 
-        mockMvc.perform(delete("/scrapper-api/v1.0/links/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .characterEncoding("utf-8")
-                .content(removeLinkRequestJson))
+    @Test
+    @DisplayName("Chat: Delete; Incorrect Request")
+    @SneakyThrows
+    void deleteChatWithNotValidParameters() {
+        final Long tgChatId = -1L;
+        mockMvc.perform(delete(DEFAULT_URL + CHAT_URL, tgChatId)).andExpect(status().isBadRequest());
+        verify(chatService, times(0)).registerChat(tgChatId);
+    }
+
+    @Test
+    @DisplayName("Links: Get; Correct Request")
+    @SneakyThrows
+    void getLinksWithValidParameters() {
+        final Long tgChatId = 1L;
+        final ListLinksResponse listLinksResponse = TestData.listLinksResponseWithLinks();
+        when(linkService.listAll(Mockito.anyLong())).thenReturn(listLinksResponse);
+        mockMvc.perform(get(DEFAULT_URL + LINKS_URL, tgChatId))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.url").value("google.com"))
-            .andExpect(jsonPath("$.id").value(1));
-
-        verify(service, times(1)).deleteLink(1L, removeLinkRequest);
+            .andExpect(jsonPath("$.size").value("1"));
+        verify(linkService, times(1)).listAll(tgChatId);
     }
 
     @Test
-    void addLink() throws Exception {
-        AddLinkRequest addLinkRequest = TestData.testAddLinkRequest();
-        String addLinkRequestJson = objectMapper.writeValueAsString(addLinkRequest);
-        when(service.addLinkByChatId(1L, addLinkRequest)).thenReturn(new LinkResponse(1L, "google.com"));
-        mockMvc.perform(post("/scrapper-api/v1.0/links/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .characterEncoding("utf-8")
+    @DisplayName("Links: Get; Incorrect Request")
+    @SneakyThrows
+    void getLinksWithNotValidParameters() {
+        final Long tgChatId = -1L;
+        mockMvc.perform(get(DEFAULT_URL + LINKS_URL, tgChatId))
+            .andExpect(status().isBadRequest());
+        verify(linkService, times(0)).listAll(tgChatId);
+    }
+
+    @Test
+    @DisplayName("Links: Delete; Correct Request")
+    @SneakyThrows
+    void deleteLinkTest() {
+        final Long tgChatId = 1L;
+        final RemoveLinkRequest removeLinkRequest = TestData.testRemoveLinkRequest();
+        final String addLinkRequestJson = objectMapper.writeValueAsString(removeLinkRequest);
+        when(linkService.removeLink(tgChatId, removeLinkRequest)).thenReturn(new Link(
+            1L,
+            removeLinkRequest.getUrl(),
+            null,
+            null
+        ));
+        mockMvc.perform(delete(DEFAULT_URL + LINKS_URL, tgChatId)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(addLinkRequestJson))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").value(1))
-            .andExpect(jsonPath("$.url").value(addLinkRequest.getUrl()));
+            .andExpect(jsonPath("$.id").value("1"))
+            .andExpect(jsonPath("$.url").value(removeLinkRequest.getUrl()));
+        verify(linkService, times(1)).removeLink(tgChatId, removeLinkRequest);
     }
 
     @Test
-    void getLinks() throws Exception {
-        ListLinksResponse listLinksResponse = TestData.listLinksResponseWithLinks();
-        String listLinksResponseJson = objectMapper.writeValueAsString(listLinksResponse);
-        when(service.getLinksByChatId(anyLong())).thenReturn(TestData.listLinksResponseWithLinks());
-        mockMvc.perform(get("/scrapper-api/v1.0/links/1"))
-            .andExpect(status().isOk());
-        verify(service, times(1)).getLinksByChatId(1L);
+    @DisplayName("Links: Post; Correct Request")
+    @SneakyThrows
+    void addLinkTest() {
+        final Long tgChatId = 1L;
+        final AddLinkRequest addLinkRequest = TestData.testAddLinkRequest();
+        final String addLinkRequestJson = objectMapper.writeValueAsString(addLinkRequest);
+        when(linkService.addLink(tgChatId, addLinkRequest)).thenReturn(new Link(
+            1L,
+            addLinkRequest.getUrl(),
+            null,
+            null
+        ));
+        mockMvc.perform(post(DEFAULT_URL + LINKS_URL, tgChatId).
+                contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(addLinkRequestJson))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value("1"))
+            .andExpect(jsonPath("$.url").value(addLinkRequest.getUrl()));
+        verify(linkService, times(1)).addLink(tgChatId, addLinkRequest);
     }
+
 }

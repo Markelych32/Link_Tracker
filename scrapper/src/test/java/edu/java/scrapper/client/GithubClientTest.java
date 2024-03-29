@@ -7,6 +7,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import edu.java.github.RepositoryResponse;
 import edu.java.github.GithubClient;
+import edu.java.scrapper.IntegrationTest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,7 +18,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.time.OffsetDateTime;
 
 @SpringBootTest
-public class GithubClientTest {
+public class GithubClientTest extends IntegrationTest {
 
     private static WireMockServer wireMockServer;
     private final WebClient.Builder webClientBuilder;
@@ -51,7 +52,7 @@ public class GithubClientTest {
                         {
                             "id": 759504210,
                             "full_name": "Markelych32/Book_REST_API",
-                            "updated_at": "2024-02-18T19:11:30Z"
+                            "pushed_at": "2024-02-18T19:11:30Z"
                         }
                         """
                 )));
