@@ -45,6 +45,10 @@ public class StackoverflowUpdater implements LinkUpdater {
 
     @Override
     public boolean support(URI link) {
-        return link.getHost().equals("stackoverflow.com");
+        try {
+            return link.getHost().equals("stackoverflow.com");
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

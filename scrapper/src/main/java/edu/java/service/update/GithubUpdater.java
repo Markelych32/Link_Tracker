@@ -35,16 +35,14 @@ public class GithubUpdater implements LinkUpdater {
             link.setLastUpdate(response.updatedAt());
             link.setLastCheck(OffsetDateTime.now());
             linkService.update(link);
-            if (link.getLastUpdate() != null) {
-                log.info("Bot Client updating...");
-                botClient.updateLink(
-                    new LinkUpdate(
-                        link.getUrl(),
-                        String.format("link: %s is updated", link.getUrl()),
-                        chatService.findChatsByLink(link)
-                    )
-                );
-            }
+            log.info("Bot Client updating...");
+            botClient.updateLink(
+                new LinkUpdate(
+                    link.getUrl(),
+                    String.format("link: %s is updated", link.getUrl()),
+                    chatService.findChatsByLink(link)
+                )
+            );
         } else {
             link.setLastCheck(OffsetDateTime.now());
             linkService.update(link);
@@ -53,6 +51,10 @@ public class GithubUpdater implements LinkUpdater {
 
     @Override
     public boolean support(URI link) {
-        return link.getHost().equals("github.com");
+        try {
+            return link.getHost().equals("github.com");
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
