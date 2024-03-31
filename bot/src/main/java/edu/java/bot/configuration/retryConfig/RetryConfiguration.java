@@ -1,11 +1,11 @@
 package edu.java.bot.configuration.retryConfig;
 
 import edu.java.bot.configuration.ApplicationConfig;
+import java.time.Duration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.util.retry.Retry;
-import java.time.Duration;
 
 @Configuration
 public class RetryConfiguration {
@@ -31,7 +31,7 @@ public class RetryConfiguration {
     }
 
     private boolean is5xxServerError(Throwable throwable) {
-        return throwable instanceof WebClientResponseException &&
-               ((WebClientResponseException) throwable).getStatusCode().is5xxServerError();
+        return throwable instanceof WebClientResponseException
+               && ((WebClientResponseException) throwable).getStatusCode().is5xxServerError();
     }
 }
