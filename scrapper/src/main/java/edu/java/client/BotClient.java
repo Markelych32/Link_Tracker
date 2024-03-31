@@ -5,6 +5,7 @@ import edu.java.controller.dto.response.LinkUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
 
 @Component
 public class BotClient {
@@ -13,16 +14,19 @@ public class BotClient {
 
     private final WebClient webClient;
     private final ClientConfig clientConfig;
+    private final Retry retry;
 
     @Autowired
-    public BotClient(WebClient.Builder webClientBuilder, ClientConfig clientConfig) {
+    public BotClient(WebClient.Builder webClientBuilder, ClientConfig clientConfig, Retry retry) {
         webClient = webClientBuilder.baseUrl(clientConfig.baseUrl()).build();
         this.clientConfig = clientConfig;
+        this.retry = retry;
     }
 
-    public BotClient(WebClient.Builder webClientBuilder, ClientConfig clientConfig, String baseUrl) {
+    public BotClient(WebClient.Builder webClientBuilder, ClientConfig clientConfig, String baseUrl, Retry retry) {
         webClient = webClientBuilder.baseUrl(baseUrl).build();
         this.clientConfig = clientConfig;
+        this.retry = retry;
     }
 
     public void updateLink(LinkUpdate linkUpdate) {
@@ -31,7 +35,7 @@ public class BotClient {
             .bodyValue(linkUpdate)
             .retrieve()
             .bodyToMono(LinkUpdate.class)
-            .block();
+            .retryWhen(retry);
     }
 }
 

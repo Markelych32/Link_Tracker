@@ -5,6 +5,7 @@ app:
     seconds: 60
     force-check-delay: 10s
   database-access-type: jpa
+  retry-type: constant
 
 spring:
   application:
