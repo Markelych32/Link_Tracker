@@ -2,8 +2,8 @@ package edu.java.service.update;
 
 import edu.java.client.BotClient;
 import edu.java.controller.dto.response.LinkUpdate;
-import edu.java.domain.dto.jdbc.Link;
 import edu.java.github.GithubClient;
+import edu.java.domain.dto.jdbc.Link;
 import edu.java.github.RepositoryResponse;
 import edu.java.service.chat.ChatService;
 import edu.java.service.link.LinkService;
@@ -35,15 +35,14 @@ public class GithubUpdater implements LinkUpdater {
             link.setLastUpdate(response.updatedAt());
             link.setLastCheck(OffsetDateTime.now());
             linkService.update(link);
-            if (link.getLastUpdate() != null) {
-                botClient.updateLink(
-                    new LinkUpdate(
-                        link.getUrl(),
-                        String.format("link: %s is updated", link.getUrl()),
-                        chatService.findChatsByLink(link)
-                    )
-                );
-            }
+            log.info("Bot Client updating...");
+            botClient.updateLink(
+                new LinkUpdate(
+                    link.getUrl(),
+                    String.format("link: %s is updated", link.getUrl()),
+                    chatService.findChatsByLink(link)
+                )
+            );
         } else {
             link.setLastCheck(OffsetDateTime.now());
             linkService.update(link);

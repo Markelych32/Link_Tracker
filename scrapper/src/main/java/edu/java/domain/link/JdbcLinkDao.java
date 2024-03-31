@@ -14,6 +14,9 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -24,20 +27,24 @@ public class JdbcLinkDao implements LinkDao {
 
     private static final String ADD_SQL =
         "INSERT INTO link (url, last_update, last_check) VALUES (?, ?, ?)";
-    private static final String REMOVE_SQL = "DELETE FROM link WHERE url = ?";
+    private static final String REMOVE_SQL = "DELETE FROM link WHERE url = :url";
     private static final String FIND_ALL_SQL = "SELECT id, url, last_update, last_check FROM link";
-    private static final String FIND_SQL = "SELECT id, url, last_update, last_check FROM link WHERE url = ?";
+    private static final String FIND_SQL = "SELECT id, url, last_update, last_check FROM link WHERE url = :url";
     private static final String FIND_ALL_BY_CHAT_SQL = """
         SELECT id, url, last_update, last_check
         FROM link
         JOIN chat_link ON link.id = chat_link.link_id
-        WHERE chat_id = ?
+        WHERE chat_id = :chatId
         """;
-    private static final String UPDATE_SQL = "UPDATE link SET last_update = ?, last_check = ? WHERE url = ?";
+    private static final String UPDATE_SQL =
+        "UPDATE link SET last_update = :lastUpdate, last_check = :lastCheck WHERE url = :url";
+
+    private static final String URL_PARAMETER = "url";
 
     private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    private final LinkMapper linkRowMapper = new LinkMapper();
+    private final LinkMapper linkRowMapper;
 
     private static final int COLUMN_NUM_OF_LAST_UPDATE = 2;
     private static final int COLUMN_NUM_OF_LAST_CHECK = 3;
@@ -52,7 +59,6 @@ public class JdbcLinkDao implements LinkDao {
                 preparedStatement.setString(1, link.getUrl());
                 preparedStatement.setTimestamp(
                     COLUMN_NUM_OF_LAST_UPDATE,
-                    //Timestamp.valueOf(link.getLastUpdate().atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime())
                     null
                 );
                 preparedStatement.setTimestamp(
@@ -67,18 +73,24 @@ public class JdbcLinkDao implements LinkDao {
 
     @Override
     public boolean remove(String url) {
-        return jdbcTemplate.update(REMOVE_SQL, url) > 0;
+        SqlParameterSource namedParameters = new MapSqlParameterSource(URL_PARAMETER, url);
+        return namedParameterJdbcTemplate.update(REMOVE_SQL, namedParameters) > 0;
     }
 
     @Override
     public List<Link> findAll() {
-        return jdbcTemplate.query(FIND_ALL_SQL, linkRowMapper);
+        return namedParameterJdbcTemplate.query(FIND_ALL_SQL, linkRowMapper);
     }
 
     @Override
     public Optional<Link> find(String url) {
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(FIND_SQL, linkRowMapper, url));
+            SqlParameterSource namedParameters = new MapSqlParameterSource(URL_PARAMETER, url);
+            return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(
+                FIND_SQL,
+                namedParameters,
+                linkRowMapper
+            ));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -87,12 +99,17 @@ public class JdbcLinkDao implements LinkDao {
 
     @Override
     public List<Link> findAllByChat(Long tgcChatId) {
-        return jdbcTemplate.query(FIND_ALL_BY_CHAT_SQL, linkRowMapper, tgcChatId);
+        SqlParameterSource namedParameters = new MapSqlParameterSource("chatId", tgcChatId);
+        return namedParameterJdbcTemplate.query(FIND_ALL_BY_CHAT_SQL, namedParameters, linkRowMapper);
     }
 
     @Override
     public void update(Link link) {
-        jdbcTemplate.update(UPDATE_SQL, link.getLastUpdate(), link.getLastCheck(), link.getUrl());
+        SqlParameterSource namedParameters = new MapSqlParameterSource()
+            .addValue("lastUpdate", link.getLastUpdate())
+            .addValue("lastCheck", link.getLastCheck())
+            .addValue(URL_PARAMETER, link.getUrl());
+        namedParameterJdbcTemplate.update(UPDATE_SQL, namedParameters);
     }
 
 }

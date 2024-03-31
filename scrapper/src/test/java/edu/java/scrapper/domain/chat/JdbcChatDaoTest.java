@@ -17,8 +17,8 @@ import java.util.Optional;
 @SpringBootTest
 public class JdbcChatDaoTest extends IntegrationTest {
 
-    private static final ChatMapper CHAT_MAPPER = new ChatMapper();
-
+    @Autowired
+    ChatMapper chatMapper;
     @Autowired
     JdbcChatDao underTest;
     @Autowired
@@ -29,7 +29,7 @@ public class JdbcChatDaoTest extends IntegrationTest {
     @Rollback
     void addTest() {
         underTest.add(1L);
-        Optional<Chat> actualResult = jdbcTemplate.query("SELECT id FROM chat", CHAT_MAPPER).stream().findFirst();
+        Optional<Chat> actualResult = jdbcTemplate.query("SELECT id FROM chat", chatMapper).stream().findFirst();
         Assertions.assertTrue(actualResult.isPresent());
         Assertions.assertEquals(1L, actualResult.get().getId());
     }
@@ -41,7 +41,7 @@ public class JdbcChatDaoTest extends IntegrationTest {
         jdbcTemplate.update("INSERT INTO chat VALUES (1)");
         boolean actualResult = underTest.remove(1L);
         Assertions.assertTrue(actualResult);
-        Optional<Chat> actualChat = jdbcTemplate.query("SELECT id FROM chat", CHAT_MAPPER).stream().findFirst();
+        Optional<Chat> actualChat = jdbcTemplate.query("SELECT id FROM chat", chatMapper).stream().findFirst();
         Assertions.assertFalse(actualChat.isPresent());
     }
 
