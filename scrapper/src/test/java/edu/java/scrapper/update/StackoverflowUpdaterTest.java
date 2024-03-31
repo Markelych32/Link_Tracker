@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 public class StackoverflowUpdaterTest {
     @Mock
     LinkService linkService;
+
     @Mock
     ChatService chatService;
     @Mock
