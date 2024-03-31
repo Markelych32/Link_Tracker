@@ -18,6 +18,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Mono;
 
 @ExtendWith(MockitoExtension.class)
 public class UntrackCommandTest {
@@ -40,7 +41,7 @@ public class UntrackCommandTest {
         when(message.chat()).thenReturn(chat);
         when(message.text()).thenReturn("/untrack test");
         when(chat.id()).thenReturn(chatId);
-        when(scrapperClient.deleteLink(anyLong(), ArgumentMatchers.any(RemoveLinkRequest.class))).thenReturn(new LinkResponse());
+        when(scrapperClient.deleteLink(anyLong(), ArgumentMatchers.any(RemoveLinkRequest.class))).thenReturn(Mono.just(new LinkResponse()));
         final String expectedResult = "The link is no longer tracked.";
         final String actualResult = underTest.handle(update).getParameters().get("text").toString();
         Assertions.assertEquals(expectedResult, actualResult);

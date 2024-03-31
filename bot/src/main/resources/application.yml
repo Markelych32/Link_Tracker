@@ -1,5 +1,6 @@
 app:
   telegram-token: ${TELEGRAM_API_KEY}
+  retry-type: constant
 
 client:
   base-url: ${SCRAPPER_CLIENT_BASE_URL}

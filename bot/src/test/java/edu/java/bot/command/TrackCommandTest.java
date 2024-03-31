@@ -17,6 +17,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Mono;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,7 +41,7 @@ public class TrackCommandTest {
         when(message.text()).thenReturn("/track test");
         when(message.chat()).thenReturn(chat);
         when(chat.id()).thenReturn(chatId);
-        when(scrapperClient.addLink(anyLong(), ArgumentMatchers.any(AddLinkRequest.class))).thenReturn(new LinkResponse());
+        when(scrapperClient.addLink(anyLong(), ArgumentMatchers.any(AddLinkRequest.class))).thenReturn(Mono.just(new LinkResponse()));
         final String expectedResult = "The Link is now being tracked.";
         final String actualResult = underTest.handle(update).getParameters().get("text").toString();
         assertEquals(expectedResult, actualResult);

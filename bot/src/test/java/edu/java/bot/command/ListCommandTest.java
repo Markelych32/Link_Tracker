@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Mono;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -37,7 +38,7 @@ public class ListCommandTest {
         when(update.message()).thenReturn(message);
         when(message.chat()).thenReturn(chat);
         when(chat.id()).thenReturn(chatId);
-        when(scrapperClient.getLinks(anyLong())).thenReturn(new ListLinksResponse());
+        when(scrapperClient.getLinks(anyLong())).thenReturn(Mono.just(new ListLinksResponse()));
         ListLinksResponse listLinksResponse = new ListLinksResponse(
             List.of(new LinkResponse()), 0);
         final String expectedResult = """
@@ -56,7 +57,7 @@ public class ListCommandTest {
         when(update.message()).thenReturn(message);
         when(message.chat()).thenReturn(chat);
         when(chat.id()).thenReturn(chatId);
-        when(scrapperClient.getLinks(anyLong())).thenReturn(listLinksResponse);
+        when(scrapperClient.getLinks(anyLong())).thenReturn(Mono.just(listLinksResponse));
         final String expectedResult = """
             *Tracked Links*:
 

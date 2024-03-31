@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 @Component
 public class ScrapperClient {
@@ -19,16 +21,19 @@ public class ScrapperClient {
 
     private final WebClient webClient;
     private final ClientConfig clientConfig;
+    private final Retry retry;
 
     @Autowired
-    public ScrapperClient(WebClient.Builder webClientBuilder, ClientConfig clientConfig) {
+    public ScrapperClient(WebClient.Builder webClientBuilder, ClientConfig clientConfig, Retry retry) {
         webClient = webClientBuilder.baseUrl(clientConfig.baseUrl()).build();
         this.clientConfig = clientConfig;
+        this.retry = retry;
     }
 
-    public ScrapperClient(WebClient.Builder webClientBuilder, ClientConfig clientConfig, String baseUrl) {
+    public ScrapperClient(WebClient.Builder webClientBuilder, ClientConfig clientConfig, String baseUrl, Retry retry) {
         webClient = webClientBuilder.baseUrl(baseUrl).build();
         this.clientConfig = clientConfig;
+        this.retry = retry;
     }
 
     public void registerChat(Long tgChatId) {
@@ -36,7 +41,7 @@ public class ScrapperClient {
             .uri(GENERAL_PATH + SCRAPPER_API_TG_CHAT_ID, tgChatId)
             .retrieve()
             .bodyToMono(Void.class)
-            .block();
+            .retryWhen(retry);
     }
 
     public void deleteChat(Long tgChatId) {
@@ -44,32 +49,32 @@ public class ScrapperClient {
             .uri(GENERAL_PATH + SCRAPPER_API_TG_CHAT_ID, tgChatId)
             .retrieve()
             .bodyToMono(Void.class)
-            .block();
+            .retryWhen(retry);
     }
 
-    public ListLinksResponse getLinks(Long tgChatId) {
+    public Mono<ListLinksResponse> getLinks(Long tgChatId) {
         return webClient.get()
             .uri(GENERAL_PATH + SCRAPPER_API_LINKS, tgChatId)
             .retrieve()
             .bodyToMono(ListLinksResponse.class)
-            .block();
+            .retryWhen(retry);
     }
 
-    public LinkResponse addLink(Long tgChatId, AddLinkRequest addLinkRequest) {
+    public Mono<LinkResponse> addLink(Long tgChatId, AddLinkRequest addLinkRequest) {
         return webClient.post()
             .uri(GENERAL_PATH + SCRAPPER_API_LINKS, tgChatId)
             .bodyValue(addLinkRequest)
             .retrieve()
             .bodyToMono(LinkResponse.class)
-            .block();
+            .retryWhen(retry);
     }
 
-    public LinkResponse deleteLink(Long tgChatId, RemoveLinkRequest removeLinkRequest) {
+    public Mono<LinkResponse> deleteLink(Long tgChatId, RemoveLinkRequest removeLinkRequest) {
         return webClient.method(HttpMethod.DELETE)
             .uri(GENERAL_PATH + SCRAPPER_API_LINKS, tgChatId)
             .bodyValue(removeLinkRequest)
             .retrieve()
             .bodyToMono(LinkResponse.class)
-            .block();
+            .retryWhen(retry);
     }
 }
