@@ -1,6 +1,6 @@
 package edu.java;
 
-import edu.java.domain.dto.Link;
+import edu.java.domain.dto.jdbc.Link;
 import edu.java.exception.LinkNotFoundByUrlException;
 import edu.java.service.link.LinkService;
 import edu.java.service.update.LinkUpdater;

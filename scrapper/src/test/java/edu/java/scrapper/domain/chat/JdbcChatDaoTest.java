@@ -2,7 +2,7 @@ package edu.java.scrapper.domain.chat;
 
 import edu.java.domain.chat.ChatMapper;
 import edu.java.domain.chat.JdbcChatDao;
-import edu.java.domain.dto.Chat;
+import edu.java.domain.dto.jdbc.Chat;
 import edu.java.scrapper.IntegrationTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

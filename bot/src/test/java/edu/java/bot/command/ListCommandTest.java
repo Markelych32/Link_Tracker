@@ -3,98 +3,80 @@ package edu.java.bot.command;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
-import edu.java.bot.model.Link;
-import edu.java.bot.model.User;
-import edu.java.bot.service.UserService;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import edu.java.bot.TestData;
+import edu.java.bot.client.ScrapperClient;
+import edu.java.bot.controller.dto.response.LinkResponse;
+import edu.java.bot.controller.dto.response.ListLinksResponse;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import java.util.ArrayList;
-import static org.mockito.Mockito.when;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
-import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 public class ListCommandTest {
-    private static UserService userService;
+    @Mock
     private static Update update;
+    @Mock
     private static Message message;
+    @Mock
     private static Chat chat;
 
-    @BeforeAll
-    public static void mockInit() {
-        userService = Mockito.mock(UserService.class);
-        update = Mockito.mock(Update.class);
-        message = Mockito.mock(Message.class);
-        chat = Mockito.mock(Chat.class);
-    }
+    @Mock
+    ScrapperClient scrapperClient;
+    @InjectMocks
+    ListCommand underTest;
 
     @Test
     public void emptyListOfTrackedLinksShouldShowCorrespondingMessage() {
-        User user = new User();
-        user.setLinks(new ArrayList<>());
-        ListCommand listCommand = new ListCommand(userService);
-
+        final Long chatId = TestData.TEST_ID;
         when(update.message()).thenReturn(message);
-        when(message.text()).thenReturn("/list");
         when(message.chat()).thenReturn(chat);
-        when(message.chat().id()).thenReturn(1L);
-        when(userService.findByChatId(Mockito.anyLong())).thenReturn(Optional.of(user));
-
-        final String actualResponseMessage = listCommand.handle(update).getParameters().get("text").toString();
-        final String expectedResponseMessage =
-            """
-                Ops... There are no tracked links.
-                You can add them using */track* command.
-                """;
-
-        Assertions.assertEquals(actualResponseMessage, expectedResponseMessage);
+        when(chat.id()).thenReturn(chatId);
+        when(scrapperClient.getLinks(anyLong())).thenReturn(new ListLinksResponse());
+        ListLinksResponse listLinksResponse = new ListLinksResponse(
+            List.of(new LinkResponse()), 0);
+        final String expectedResult = """
+            Ops... There are no tracked links.
+            You can add them using */track* command.
+            """;
+        final String actualResult = underTest.handle(update).getParameters().get("text").toString();
+        assertEquals(expectedResult, actualResult);
     }
 
     @Test
     public void commandShouldShowAllTrackedLinksByUser() {
-
-        ListCommand listCommand = new ListCommand(userService);
-        Link apple_link = new Link();
-        Link yandex_link = new Link();
-        User user = new User();
-        apple_link.setUrl("apple.com");
-        yandex_link.setUrl("yandex.ru");
-        user.setLinks(new ArrayList<>(List.of(apple_link, yandex_link)));
-
+        final Long chatId = TestData.TEST_ID;
+        ListLinksResponse listLinksResponse = new ListLinksResponse(
+            List.of(new LinkResponse(1L, "apple.com"), new LinkResponse(2L, "google.com")), 2);
         when(update.message()).thenReturn(message);
-        when(message.text()).thenReturn("/list");
         when(message.chat()).thenReturn(chat);
-        when(message.chat().id()).thenReturn(13L);
-        when(userService.findByChatId(Mockito.anyLong())).thenReturn(Optional.of(user));
-
-        String actualResponseMessage = listCommand.handle(update).getParameters().get("text").toString();
-        String expectedResponseMessage = """
+        when(chat.id()).thenReturn(chatId);
+        when(scrapperClient.getLinks(anyLong())).thenReturn(listLinksResponse);
+        final String expectedResult = """
             *Tracked Links*:
 
             apple.com
-            yandex.ru""";
-
-        Assertions.assertEquals(actualResponseMessage, expectedResponseMessage);
+            google.com""";
+        final String actualResult = underTest.handle(update).getParameters().get("text").toString();
+        assertEquals(expectedResult, actualResult);
     }
 
     @Test
     public void commandOfListCommandShouldBeRight() {
-        ListCommand listCommand = new ListCommand(userService);
-
-        String actualCommand = listCommand.command();
+        String actualCommand = underTest.command();
         String expectedCommand = "/list";
-
-        Assertions.assertEquals(actualCommand, expectedCommand);
+        assertEquals(actualCommand, expectedCommand);
     }
 
     @Test
     public void descriptionShouldBeRight() {
-        ListCommand listCommand = new ListCommand(userService);
-
-        String actualDescription = listCommand.description();
+        String actualDescription = underTest.description();
         String expectedDescription = "Show all tracked links";
-
-        Assertions.assertEquals(actualDescription, expectedDescription);
+        assertEquals(actualDescription, expectedDescription);
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Component
 public class BotClient {
 
-    private static final String BOT_API_V_1_0_UPDATES = "bot-api/v1.0/updates";
+    private static final String BOT_API_V_1_0_UPDATES = "/updates";
 
     private final WebClient webClient;
     private final ClientConfig clientConfig;
@@ -30,7 +30,7 @@ public class BotClient {
             .uri(BOT_API_V_1_0_UPDATES)
             .bodyValue(linkUpdate)
             .retrieve()
-            .bodyToMono(Void.class)
+            .bodyToMono(LinkUpdate.class)
             .block();
     }
 }

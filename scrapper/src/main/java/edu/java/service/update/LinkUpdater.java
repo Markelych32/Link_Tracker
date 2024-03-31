@@ -1,6 +1,6 @@
 package edu.java.service.update;
 
-import edu.java.domain.dto.Link;
+import edu.java.domain.dto.jdbc.Link;
 import java.net.URI;
 
 public interface LinkUpdater {

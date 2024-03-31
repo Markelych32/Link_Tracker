@@ -2,7 +2,7 @@ package edu.java.service.update;
 
 import edu.java.client.BotClient;
 import edu.java.controller.dto.response.LinkUpdate;
-import edu.java.domain.dto.Link;
+import edu.java.domain.dto.jdbc.Link;
 import edu.java.github.GithubClient;
 import edu.java.github.RepositoryResponse;
 import edu.java.service.chat.ChatService;

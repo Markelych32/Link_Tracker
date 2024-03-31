@@ -2,8 +2,8 @@ package edu.java.scrapper.service.chat;
 
 import edu.java.domain.chat.JdbcChatDao;
 import edu.java.domain.chat_link.JdbcChatLinkDao;
-import edu.java.domain.dto.Chat;
-import edu.java.domain.dto.Link;
+import edu.java.domain.dto.jdbc.Chat;
+import edu.java.domain.dto.jdbc.Link;
 import edu.java.exception.ChatAlreadyExistException;
 import edu.java.exception.ChatNotFoundException;
 import edu.java.scrapper.TestData;

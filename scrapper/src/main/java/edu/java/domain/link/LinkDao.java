@@ -1,6 +1,6 @@
 package edu.java.domain.link;
 
-import edu.java.domain.dto.Link;
+import edu.java.domain.dto.jdbc.Link;
 import java.util.List;
 import java.util.Optional;
 

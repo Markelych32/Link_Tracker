@@ -2,7 +2,7 @@ package edu.java.scrapper.update;
 
 import edu.java.client.BotClient;
 import edu.java.controller.dto.response.LinkUpdate;
-import edu.java.domain.dto.Link;
+import edu.java.domain.dto.jdbc.Link;
 import edu.java.service.chat.ChatService;
 import edu.java.service.link.LinkService;
 import edu.java.service.update.StackoverflowUpdater;
@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 public class StackoverflowUpdaterTest {
     @Mock
     LinkService linkService;
+
     @Mock
     ChatService chatService;
     @Mock

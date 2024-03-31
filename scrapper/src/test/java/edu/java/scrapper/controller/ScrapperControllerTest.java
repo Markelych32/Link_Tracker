@@ -4,10 +4,10 @@ import edu.java.controller.ScrapperController;
 import edu.java.controller.dto.request.AddLinkRequest;
 import edu.java.controller.dto.request.RemoveLinkRequest;
 import edu.java.controller.dto.response.ListLinksResponse;
-import edu.java.domain.dto.Link;
+import edu.java.domain.dto.jdbc.Link;
 import edu.java.scrapper.TestData;
-import edu.java.service.chat.JdbcChatService;
-import edu.java.service.link.JdbcLinkService;
+import edu.java.service.chat.ChatService;
+import edu.java.service.link.LinkService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,9 +38,9 @@ public class ScrapperControllerTest {
     private static final String LINKS_URL = "/links/{id}";
 
     @Mock
-    private JdbcChatService chatService;
+    private ChatService chatService;
     @Mock
-    private JdbcLinkService linkService;
+    private LinkService linkService;
     @InjectMocks
     private ScrapperController underTest;
 

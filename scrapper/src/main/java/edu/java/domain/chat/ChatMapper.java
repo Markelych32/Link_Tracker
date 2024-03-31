@@ -1,6 +1,6 @@
 package edu.java.domain.chat;
 
-import edu.java.domain.dto.Chat;
+import edu.java.domain.dto.jdbc.Chat;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;

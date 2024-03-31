@@ -1,7 +1,5 @@
 package edu.java.bot;
 
-import com.pengrad.telegrambot.model.Update;
-
 public final class TestData {
     private TestData() {
     }

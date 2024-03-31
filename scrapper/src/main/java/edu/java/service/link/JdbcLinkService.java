@@ -6,7 +6,7 @@ import edu.java.controller.dto.response.LinkResponse;
 import edu.java.controller.dto.response.ListLinksResponse;
 import edu.java.domain.chat.JdbcChatDao;
 import edu.java.domain.chat_link.JdbcChatLinkDao;
-import edu.java.domain.dto.Link;
+import edu.java.domain.dto.jdbc.Link;
 import edu.java.domain.link.JdbcLinkDao;
 import edu.java.exception.ChatNotFoundException;
 import edu.java.exception.LinkAlreadyRegisteredInChatException;
@@ -17,12 +17,12 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Primary;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
 @RequiredArgsConstructor
 @Slf4j
+@Primary
 public class JdbcLinkService implements LinkService {
 
     private final JdbcLinkDao linkDao;

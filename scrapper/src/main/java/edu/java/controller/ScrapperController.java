@@ -4,8 +4,8 @@ import edu.java.controller.dto.request.AddLinkRequest;
 import edu.java.controller.dto.request.RemoveLinkRequest;
 import edu.java.controller.dto.response.LinkResponse;
 import edu.java.controller.dto.response.ListLinksResponse;
-import edu.java.service.chat.JdbcChatService;
-import edu.java.service.link.JdbcLinkService;
+import edu.java.service.chat.ChatService;
+import edu.java.service.link.LinkService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class ScrapperController {
 
-    private final JdbcLinkService linkService;
-    private final JdbcChatService chatService;
+    private final LinkService linkService;
+    private final ChatService chatService;
 
     @PostMapping("/tg-chat/{id}")
     public ResponseEntity<Void> registerChat(

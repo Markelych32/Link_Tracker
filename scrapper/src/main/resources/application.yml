@@ -1,9 +1,10 @@
 app:
   scheduler:
     enable: true
-    interval: 10
+    interval: 60
     seconds: 60
     force-check-delay: 10s
+  database-access-type: jpa
 
 spring:
   application:
@@ -15,11 +16,14 @@ spring:
     username: postgres
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5434/scrapper
-
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
 springdoc:
   swagger-ui:
     path: /swagger-ui
-
 server:
   port: 8080
   error:

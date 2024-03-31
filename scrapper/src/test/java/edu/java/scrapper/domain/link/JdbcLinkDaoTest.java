@@ -1,6 +1,6 @@
 package edu.java.scrapper.domain.link;
 
-import edu.java.domain.dto.Link;
+import edu.java.domain.dto.jdbc.Link;
 import edu.java.domain.link.JdbcLinkDao;
 import edu.java.domain.link.LinkMapper;
 import edu.java.scrapper.IntegrationTest;

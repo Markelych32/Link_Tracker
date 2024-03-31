@@ -1,6 +1,6 @@
 package edu.java.domain.link;
 
-import edu.java.domain.dto.Link;
+import edu.java.domain.dto.jdbc.Link;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
