@@ -41,7 +41,7 @@ public class UntrackCommandTest {
         when(message.chat()).thenReturn(chat);
         when(message.text()).thenReturn("/untrack test");
         when(chat.id()).thenReturn(chatId);
-        when(scrapperClient.deleteLink(anyLong(), ArgumentMatchers.any(RemoveLinkRequest.class))).thenReturn(Mono.just(new LinkResponse()));
+        when(scrapperClient.deleteLink(anyLong(), ArgumentMatchers.any(RemoveLinkRequest.class))).thenReturn(new LinkResponse());
         final String expectedResult = "The link is no longer tracked.";
         final String actualResult = underTest.handle(update).getParameters().get("text").toString();
         Assertions.assertEquals(expectedResult, actualResult);

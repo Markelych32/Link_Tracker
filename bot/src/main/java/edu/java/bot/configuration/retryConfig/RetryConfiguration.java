@@ -10,22 +10,23 @@ import reactor.util.retry.Retry;
 @Configuration
 public class RetryConfiguration {
 
-    private static final int BACKOFF = 2;
-    private static final int MAX_ATTEMPTS = 3;
+    private static final int DURATION = 5;
+    private static final int ATTEMPTS = 2;
 
     @Bean
     public Retry createRetry(ApplicationConfig applicationConfig) {
         switch (applicationConfig.retryType()) {
             case CONSTANT -> {
-                return Retry.fixedDelay(MAX_ATTEMPTS, Duration.ofSeconds(BACKOFF))
+                return Retry.fixedDelay(ATTEMPTS, Duration.ofSeconds(DURATION))
                     .filter(this::is5xxServerError);
             }
             case EXPONENTIAL -> {
-                return Retry.backoff(MAX_ATTEMPTS, Duration.ofSeconds(BACKOFF))
+                return Retry.backoff(ATTEMPTS, Duration.ofSeconds(DURATION))
                     .filter(this::is5xxServerError);
             }
             default -> {
-                return null;
+                return new LinearRetry(DURATION, ATTEMPTS)
+                    .filter(this::is5xxServerError);
             }
         }
     }

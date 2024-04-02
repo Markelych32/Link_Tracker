@@ -38,7 +38,7 @@ public class ListCommandTest {
         when(update.message()).thenReturn(message);
         when(message.chat()).thenReturn(chat);
         when(chat.id()).thenReturn(chatId);
-        when(scrapperClient.getLinks(anyLong())).thenReturn(Mono.just(new ListLinksResponse()));
+        when(scrapperClient.getLinks(anyLong())).thenReturn(new ListLinksResponse());
         ListLinksResponse listLinksResponse = new ListLinksResponse(
             List.of(new LinkResponse()), 0);
         final String expectedResult = """
@@ -57,7 +57,7 @@ public class ListCommandTest {
         when(update.message()).thenReturn(message);
         when(message.chat()).thenReturn(chat);
         when(chat.id()).thenReturn(chatId);
-        when(scrapperClient.getLinks(anyLong())).thenReturn(Mono.just(listLinksResponse));
+        when(scrapperClient.getLinks(anyLong())).thenReturn(listLinksResponse);
         final String expectedResult = """
             *Tracked Links*:
 

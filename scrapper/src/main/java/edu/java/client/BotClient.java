@@ -35,7 +35,8 @@ public class BotClient {
             .bodyValue(linkUpdate)
             .retrieve()
             .bodyToMono(LinkUpdate.class)
-            .retryWhen(retry);
+            .retryWhen(retry)
+            .block();
     }
 }
 

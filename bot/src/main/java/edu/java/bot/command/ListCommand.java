@@ -37,7 +37,7 @@ public class ListCommand implements Command {
     @Override
     public SendMessage handle(Update update) {
         Long tgChatId = update.message().chat().id();
-        final ListLinksResponse listLinksResponse = scrapperClient.getLinks(tgChatId).block();
+        final ListLinksResponse listLinksResponse = scrapperClient.getLinks(tgChatId);
         if (listLinksResponse.getSize() == 0) {
             return new SendMessage(tgChatId, MESSAGE_ABOUT_NO_TRACKED_LINKS).parseMode(ParseMode.Markdown);
         }

@@ -41,7 +41,7 @@ public class TrackCommandTest {
         when(message.text()).thenReturn("/track test");
         when(message.chat()).thenReturn(chat);
         when(chat.id()).thenReturn(chatId);
-        when(scrapperClient.addLink(anyLong(), ArgumentMatchers.any(AddLinkRequest.class))).thenReturn(Mono.just(new LinkResponse()));
+        when(scrapperClient.addLink(anyLong(), ArgumentMatchers.any(AddLinkRequest.class))).thenReturn(new LinkResponse());
         final String expectedResult = "The Link is now being tracked.";
         final String actualResult = underTest.handle(update).getParameters().get("text").toString();
         assertEquals(expectedResult, actualResult);

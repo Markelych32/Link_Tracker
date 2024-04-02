@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 @Component
@@ -41,7 +40,8 @@ public class ScrapperClient {
             .uri(GENERAL_PATH + SCRAPPER_API_TG_CHAT_ID, tgChatId)
             .retrieve()
             .bodyToMono(Void.class)
-            .retryWhen(retry);
+            .retryWhen(retry)
+            .block();
     }
 
     public void deleteChat(Long tgChatId) {
@@ -49,32 +49,36 @@ public class ScrapperClient {
             .uri(GENERAL_PATH + SCRAPPER_API_TG_CHAT_ID, tgChatId)
             .retrieve()
             .bodyToMono(Void.class)
-            .retryWhen(retry);
+            .retryWhen(retry)
+            .block();
     }
 
-    public Mono<ListLinksResponse> getLinks(Long tgChatId) {
+    public ListLinksResponse getLinks(Long tgChatId) {
         return webClient.get()
             .uri(GENERAL_PATH + SCRAPPER_API_LINKS, tgChatId)
             .retrieve()
             .bodyToMono(ListLinksResponse.class)
-            .retryWhen(retry);
+            .retryWhen(retry)
+            .block();
     }
 
-    public Mono<LinkResponse> addLink(Long tgChatId, AddLinkRequest addLinkRequest) {
+    public LinkResponse addLink(Long tgChatId, AddLinkRequest addLinkRequest) {
         return webClient.post()
             .uri(GENERAL_PATH + SCRAPPER_API_LINKS, tgChatId)
             .bodyValue(addLinkRequest)
             .retrieve()
             .bodyToMono(LinkResponse.class)
-            .retryWhen(retry);
+            .retryWhen(retry)
+            .block();
     }
 
-    public Mono<LinkResponse> deleteLink(Long tgChatId, RemoveLinkRequest removeLinkRequest) {
+    public LinkResponse deleteLink(Long tgChatId, RemoveLinkRequest removeLinkRequest) {
         return webClient.method(HttpMethod.DELETE)
             .uri(GENERAL_PATH + SCRAPPER_API_LINKS, tgChatId)
             .bodyValue(removeLinkRequest)
             .retrieve()
             .bodyToMono(LinkResponse.class)
-            .retryWhen(retry);
+            .retryWhen(retry)
+            .block();
     }
 }
