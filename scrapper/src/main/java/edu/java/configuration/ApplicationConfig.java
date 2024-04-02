@@ -10,8 +10,6 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties(prefix = "app")
 public record ApplicationConfig(
     @NotNull
-    RetryType retryType,
-    @NotNull
     Scheduler scheduler
 ) {
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull int seconds,
