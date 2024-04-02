@@ -1,7 +1,7 @@
 package edu.java.configuration.retryConfig;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.util.List;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "retry")
 public record RetryConfig(
