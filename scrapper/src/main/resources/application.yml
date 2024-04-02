@@ -8,7 +8,7 @@ app:
 
 retry:
   retry-type: exponential
-  duration: 5s
+  duration: 5
   attempts: 2
   codes: 500, 501, 502, 503, 504, 521, 522, 523, 524
 
