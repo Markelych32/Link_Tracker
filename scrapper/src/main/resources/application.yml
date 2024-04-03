@@ -12,6 +12,9 @@ retry:
   attempts: 2
   codes: 500, 501, 502, 503, 504, 521, 522, 523, 524
 
+rate:
+  limit: 20
+  refill: 20
 
 spring:
   application:
