@@ -1,18 +1,18 @@
 package edu.java.controller;
 
-import edu.java.configuration.RateConfiguration;
 import edu.java.controller.dto.request.AddLinkRequest;
 import edu.java.controller.dto.request.RemoveLinkRequest;
 import edu.java.controller.dto.response.LinkResponse;
 import edu.java.controller.dto.response.ListLinksResponse;
+import edu.java.service.RateLimitService;
 import edu.java.service.chat.ChatService;
 import edu.java.service.link.LinkService;
-import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
-import io.github.bucket4j.Refill;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import java.time.Duration;
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,29 +26,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/scrapper-api/v1.0")
+@RequiredArgsConstructor
 @Slf4j
 public class ScrapperController {
 
+    private static final String X_FORWARDED_FOR = "X-Forwarded-For";
+
     private final LinkService linkService;
     private final ChatService chatService;
-    private final Bucket bucket;
-
-    public ScrapperController(LinkService linkService, ChatService chatService, RateConfiguration rateConfiguration) {
-        this.linkService = linkService;
-        this.chatService = chatService;
-        Bandwidth limit = Bandwidth.classic(
-            rateConfiguration.limit(),
-            Refill.intervally(rateConfiguration.refill(), Duration.ofMinutes(1))
-        );
-        this.bucket = Bucket.builder()
-            .addLimit(limit)
-            .build();
-    }
+    private final RateLimitService rateLimitService;
 
     @PostMapping("/tg-chat/{id}")
     public ResponseEntity<Void> registerChat(
-        @PathVariable @Min(1) Long id
+        @PathVariable @Min(1) Long id,
+        HttpServletRequest request
     ) {
+        final String ip = Optional.ofNullable(request.getHeader(X_FORWARDED_FOR))
+            .orElseGet(request::getRemoteAddr);
+        Bucket bucket = rateLimitService.catchBucket(ip);
         if (bucket.tryConsume(1)) {
             chatService.registerChat(id);
             log.info("Чат зарегистрирован");
@@ -59,8 +54,12 @@ public class ScrapperController {
 
     @DeleteMapping("/tg-chat/{id}")
     public ResponseEntity<Void> deleteChat(
-        @PathVariable @Min(1) Long id
+        @PathVariable @Min(1) Long id,
+        HttpServletRequest request
     ) {
+        final String ip = Optional.ofNullable(request.getHeader(X_FORWARDED_FOR))
+            .orElseGet(request::getRemoteAddr);
+        Bucket bucket = rateLimitService.catchBucket(ip);
         if (bucket.tryConsume(1)) {
             chatService.deleteChat(id);
             log.info("Чат успешно удален");
@@ -71,8 +70,12 @@ public class ScrapperController {
 
     @GetMapping("/links/{id}")
     public ResponseEntity<ListLinksResponse> getLinks(
-        @PathVariable("id") @Min(1) Long chatId
+        @PathVariable("id") @Min(1) Long chatId,
+        HttpServletRequest request
     ) {
+        final String ip = Optional.ofNullable(request.getHeader(X_FORWARDED_FOR))
+            .orElseGet(request::getRemoteAddr);
+        Bucket bucket = rateLimitService.catchBucket(ip);
         if (bucket.tryConsume(1)) {
             log.info("Ссылки успешно получены");
             return new ResponseEntity<>(linkService.listAll(chatId), HttpStatus.OK);
@@ -83,8 +86,12 @@ public class ScrapperController {
     @PostMapping("/links/{id}")
     public ResponseEntity<LinkResponse> addLink(
         @PathVariable("id") @Min(1) Long chatId,
-        @RequestBody @Valid AddLinkRequest addLinkRequest
+        @RequestBody @Valid AddLinkRequest addLinkRequest,
+        HttpServletRequest request
     ) {
+        final String ip = Optional.ofNullable(request.getHeader(X_FORWARDED_FOR))
+            .orElseGet(request::getRemoteAddr);
+        Bucket bucket = rateLimitService.catchBucket(ip);
         if (bucket.tryConsume(1)) {
             log.info("Ссылка успешно добавлена");
             return new ResponseEntity<>(
@@ -98,8 +105,12 @@ public class ScrapperController {
     @DeleteMapping("/links/{id}")
     public ResponseEntity<LinkResponse> deleteLink(
         @PathVariable("id") @Min(1) Long chatId,
-        @RequestBody RemoveLinkRequest removeLinkRequest
+        @RequestBody RemoveLinkRequest removeLinkRequest,
+        HttpServletRequest request
     ) {
+        final String ip = Optional.ofNullable(request.getHeader(X_FORWARDED_FOR))
+            .orElseGet(request::getRemoteAddr);
+        Bucket bucket = rateLimitService.catchBucket(ip);
         if (bucket.tryConsume(1)) {
             log.info("Ссылка успешно удалена");
             return new ResponseEntity<>(
