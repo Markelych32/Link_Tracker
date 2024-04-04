@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
 
 @Component
 public class ScrapperClient {
@@ -19,16 +20,19 @@ public class ScrapperClient {
 
     private final WebClient webClient;
     private final ClientConfig clientConfig;
+    private final Retry retry;
 
     @Autowired
-    public ScrapperClient(WebClient.Builder webClientBuilder, ClientConfig clientConfig) {
+    public ScrapperClient(WebClient.Builder webClientBuilder, ClientConfig clientConfig, Retry retry) {
         webClient = webClientBuilder.baseUrl(clientConfig.baseUrl()).build();
         this.clientConfig = clientConfig;
+        this.retry = retry;
     }
 
-    public ScrapperClient(WebClient.Builder webClientBuilder, ClientConfig clientConfig, String baseUrl) {
+    public ScrapperClient(WebClient.Builder webClientBuilder, ClientConfig clientConfig, String baseUrl, Retry retry) {
         webClient = webClientBuilder.baseUrl(baseUrl).build();
         this.clientConfig = clientConfig;
+        this.retry = retry;
     }
 
     public void registerChat(Long tgChatId) {
@@ -36,6 +40,7 @@ public class ScrapperClient {
             .uri(GENERAL_PATH + SCRAPPER_API_TG_CHAT_ID, tgChatId)
             .retrieve()
             .bodyToMono(Void.class)
+            .retryWhen(retry)
             .block();
     }
 
@@ -44,6 +49,7 @@ public class ScrapperClient {
             .uri(GENERAL_PATH + SCRAPPER_API_TG_CHAT_ID, tgChatId)
             .retrieve()
             .bodyToMono(Void.class)
+            .retryWhen(retry)
             .block();
     }
 
@@ -52,6 +58,7 @@ public class ScrapperClient {
             .uri(GENERAL_PATH + SCRAPPER_API_LINKS, tgChatId)
             .retrieve()
             .bodyToMono(ListLinksResponse.class)
+            .retryWhen(retry)
             .block();
     }
 
@@ -61,6 +68,7 @@ public class ScrapperClient {
             .bodyValue(addLinkRequest)
             .retrieve()
             .bodyToMono(LinkResponse.class)
+            .retryWhen(retry)
             .block();
     }
 
@@ -70,6 +78,7 @@ public class ScrapperClient {
             .bodyValue(removeLinkRequest)
             .retrieve()
             .bodyToMono(LinkResponse.class)
+            .retryWhen(retry)
             .block();
     }
 }

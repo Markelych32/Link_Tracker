@@ -4,10 +4,14 @@ import edu.java.controller.dto.request.AddLinkRequest;
 import edu.java.controller.dto.request.RemoveLinkRequest;
 import edu.java.controller.dto.response.LinkResponse;
 import edu.java.controller.dto.response.ListLinksResponse;
+import edu.java.service.RateLimitService;
 import edu.java.service.chat.ChatService;
 import edu.java.service.link.LinkService;
+import io.github.bucket4j.Bucket;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,56 +30,94 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class ScrapperController {
 
+    private static final String X_FORWARDED_FOR = "X-Forwarded-For";
+
     private final LinkService linkService;
     private final ChatService chatService;
+    private final RateLimitService rateLimitService;
 
     @PostMapping("/tg-chat/{id}")
     public ResponseEntity<Void> registerChat(
-        @PathVariable @Min(1) Long id
+        @PathVariable @Min(1) Long id,
+        HttpServletRequest request
     ) {
-        chatService.registerChat(id);
-        log.info("Чат зарегистрирован");
-        return new ResponseEntity<>(HttpStatus.OK);
+        final String ip = Optional.ofNullable(request.getHeader(X_FORWARDED_FOR))
+            .orElseGet(request::getRemoteAddr);
+        Bucket bucket = rateLimitService.catchBucket(ip);
+        if (bucket.tryConsume(1)) {
+            chatService.registerChat(id);
+            log.info("Чат зарегистрирован");
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
     }
 
     @DeleteMapping("/tg-chat/{id}")
     public ResponseEntity<Void> deleteChat(
-        @PathVariable @Min(1) Long id
+        @PathVariable @Min(1) Long id,
+        HttpServletRequest request
     ) {
-        chatService.deleteChat(id);
-        log.info("Чат успешно удален");
-        return new ResponseEntity<>(HttpStatus.OK);
+        final String ip = Optional.ofNullable(request.getHeader(X_FORWARDED_FOR))
+            .orElseGet(request::getRemoteAddr);
+        Bucket bucket = rateLimitService.catchBucket(ip);
+        if (bucket.tryConsume(1)) {
+            chatService.deleteChat(id);
+            log.info("Чат успешно удален");
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
     }
 
     @GetMapping("/links/{id}")
     public ResponseEntity<ListLinksResponse> getLinks(
-        @PathVariable("id") @Min(1) Long chatId
+        @PathVariable("id") @Min(1) Long chatId,
+        HttpServletRequest request
     ) {
-        log.info("Ссылки успешно получены");
-        return new ResponseEntity<>(linkService.listAll(chatId), HttpStatus.OK);
+        final String ip = Optional.ofNullable(request.getHeader(X_FORWARDED_FOR))
+            .orElseGet(request::getRemoteAddr);
+        Bucket bucket = rateLimitService.catchBucket(ip);
+        if (bucket.tryConsume(1)) {
+            log.info("Ссылки успешно получены");
+            return new ResponseEntity<>(linkService.listAll(chatId), HttpStatus.OK);
+        }
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
     }
 
     @PostMapping("/links/{id}")
     public ResponseEntity<LinkResponse> addLink(
         @PathVariable("id") @Min(1) Long chatId,
-        @RequestBody @Valid AddLinkRequest addLinkRequest
+        @RequestBody @Valid AddLinkRequest addLinkRequest,
+        HttpServletRequest request
     ) {
-        log.info("Ссылка успешно добавлена");
-        return new ResponseEntity<>(
-            LinkResponse.linkDtoToLinkResponse(linkService.addLink(chatId, addLinkRequest)),
-            HttpStatus.OK
-        );
+        final String ip = Optional.ofNullable(request.getHeader(X_FORWARDED_FOR))
+            .orElseGet(request::getRemoteAddr);
+        Bucket bucket = rateLimitService.catchBucket(ip);
+        if (bucket.tryConsume(1)) {
+            log.info("Ссылка успешно добавлена");
+            return new ResponseEntity<>(
+                LinkResponse.linkDtoToLinkResponse(linkService.addLink(chatId, addLinkRequest)),
+                HttpStatus.OK
+            );
+        }
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
     }
 
     @DeleteMapping("/links/{id}")
     public ResponseEntity<LinkResponse> deleteLink(
         @PathVariable("id") @Min(1) Long chatId,
-        @RequestBody RemoveLinkRequest removeLinkRequest
+        @RequestBody RemoveLinkRequest removeLinkRequest,
+        HttpServletRequest request
     ) {
-        log.info("Ссылка успешно удалена");
-        return new ResponseEntity<>(
-            LinkResponse.linkDtoToLinkResponse(linkService.removeLink(chatId, removeLinkRequest)),
-            HttpStatus.OK
-        );
+        final String ip = Optional.ofNullable(request.getHeader(X_FORWARDED_FOR))
+            .orElseGet(request::getRemoteAddr);
+        Bucket bucket = rateLimitService.catchBucket(ip);
+        if (bucket.tryConsume(1)) {
+            log.info("Ссылка успешно удалена");
+            return new ResponseEntity<>(
+                LinkResponse.linkDtoToLinkResponse(linkService.removeLink(chatId, removeLinkRequest)),
+                HttpStatus.OK
+            );
+        }
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
     }
 }
