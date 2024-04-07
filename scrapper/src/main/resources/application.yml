@@ -5,6 +5,11 @@ app:
     seconds: 60
     force-check-delay: 10s
   database-access-type: jpa
+  kafka:
+    bootstrap-server: localhost:29092
+    topic-name: update-message-topic
+    partitions: 2
+    replications: 1
 
 retry:
   retry-type: exponential
