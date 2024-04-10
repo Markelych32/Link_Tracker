@@ -3,6 +3,7 @@ package edu.java.service.update;
 import edu.java.client.BotClient;
 import edu.java.controller.dto.response.LinkUpdate;
 import edu.java.domain.dto.jdbc.Link;
+import edu.java.service.KafkaSenderService;
 import edu.java.service.chat.ChatService;
 import edu.java.service.link.LinkService;
 import edu.java.stackOverflow.ItemResponse;
@@ -19,7 +20,8 @@ public class StackoverflowUpdater implements LinkUpdater {
     private final LinkService linkService;
     private final ChatService chatService;
     private final StackOverflowClient stackOverflowClient;
-    private final BotClient botClient;
+    //private final BotClient botClient;
+    private final KafkaSenderService senderService;
 
     @Override
     public void update(Link link) {
@@ -30,7 +32,7 @@ public class StackoverflowUpdater implements LinkUpdater {
             link.setLastUpdate(itemResponse.lastActivityDate());
             link.setLastCheck(OffsetDateTime.now());
             linkService.update(link);
-            botClient.updateLink(
+            senderService.send(
                 new LinkUpdate(
                     link.getUrl(),
                     String.format("link: %s is updated", link.getUrl()),

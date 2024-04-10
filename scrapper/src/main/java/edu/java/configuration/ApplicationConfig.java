@@ -11,7 +11,8 @@ public record ApplicationConfig(
     @NotNull
     Kafka kafka,
     @NotNull
-    Scheduler scheduler
+    Scheduler scheduler,
+    Boolean useQueue
 ) {
     public record Scheduler(boolean enable,
                             @NotNull Duration interval,
