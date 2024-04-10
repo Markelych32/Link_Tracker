@@ -5,7 +5,7 @@ app:
     seconds: 60
     force-check-delay: 10s
   database-access-type: jpa
-  useQueue: false
+  useQueue: true
   kafka:
     bootstrap-server: localhost:9092
     topic-name: link-update

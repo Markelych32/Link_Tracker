@@ -4,7 +4,6 @@ import edu.java.bot.configuration.kafka.properties.KafkaConsumer;
 import edu.java.bot.configuration.kafka.properties.KafkaProducer;
 import edu.java.bot.controller.dto.request.LinkUpdate;
 import edu.java.bot.exception.KafkaErrorHandler;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -27,18 +26,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-@RequiredArgsConstructor
 @EnableKafka
 @Slf4j
 public class KafkaConfig {
-
-    private final KafkaProducer kafkaProducer;
-    private final KafkaConsumer kafkaConsumer;
-
     @Bean
-    public ConsumerFactory<String, LinkUpdate> linkUpdateConsumerFactory() {
+    public ConsumerFactory<String, LinkUpdate> linkUpdateConsumerFactory(KafkaConsumer kafkaConsumer) {
         Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConsumer.getBootstrapServers());
+        configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConsumer.getBootstrapServer());
         configProps.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaConsumer.getGroupId());
         configProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, kafkaConsumer.getAutoOffsetReset());
         configProps.put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, kafkaConsumer.getMaxPollIntervalMs());
@@ -54,9 +48,10 @@ public class KafkaConfig {
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, LinkUpdate>
-    linkUpdateConcurrentKafkaListenerContainerFactory(
-        ConsumerFactory<String, LinkUpdate> consumerFactory,
-        KafkaErrorHandler kafkaErrorHandler
+    linkUpdateContainerFactory(
+        KafkaConsumer kafkaConsumer,
+        KafkaErrorHandler kafkaErrorHandler,
+        ConsumerFactory<String, LinkUpdate> consumerFactory
     ) {
         ConcurrentKafkaListenerContainerFactory<String, LinkUpdate> factory =
             new ConcurrentKafkaListenerContainerFactory<>();
@@ -68,7 +63,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ProducerFactory<String, Object> producerFactory() {
+    public ProducerFactory<String, Object> producerFactory(KafkaProducer kafkaProducer) {
         Map<String, Object> props = new HashMap<>();
         props.put(
             ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
@@ -109,8 +104,10 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, Object> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory());
+    public KafkaTemplate<String, Object> kafkaTemplate(
+        KafkaProducer kafkaProducer
+    ) {
+        return new KafkaTemplate<>(producerFactory(kafkaProducer));
     }
 
 }

@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Setter
 @ConfigurationProperties(prefix = "kafka.consumer")
 public class KafkaConsumer {
-    private String bootstrapServers;
+    private String bootstrapServer;
     private String groupId;
     private String autoOffsetReset;
     private Integer maxPollIntervalMs;

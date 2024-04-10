@@ -1,5 +1,6 @@
 app:
   telegram-token: ${TELEGRAM_API_KEY}
+  scrapper-topic-name: link-update
 
 kafka:
   consumer:
