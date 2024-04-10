@@ -5,9 +5,9 @@ app:
     seconds: 60
     force-check-delay: 10s
   database-access-type: jpa
-  useQueue: true
+  useQueue: false
   kafka:
-    bootstrap-server: localhost:29092
+    bootstrap-server: localhost:9092
     topic-name: link-update
     partitions: 1
     replications: 1
@@ -33,16 +33,6 @@ bucket:
   cache:
     max-size: 100
     expiration-time: 10
-
-kafka:
-  bootstrapServer: localhost:9092
-  clientId: backend
-  asksMode: all
-  deliveryTimeout: 60s
-  lingerMs: 1_000
-  batchSize: 100_000
-  maxInFlightPerConnection: 5
-  enableIdempotence: true
 
 spring:
   application:

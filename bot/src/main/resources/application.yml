@@ -1,6 +1,23 @@
 app:
   telegram-token: ${TELEGRAM_API_KEY}
 
+kafka:
+  consumer:
+    bootstrap-server: localhost:9092
+    groupId: link-tracker
+    autoOffsetReset: latest
+    maxPollIntervalMs: 300_000
+    enableAutoCommit: false
+    concurrency: 1
+  producer:
+    bootstrap-server: localhost:9092
+    clientId: backend
+    acksMode: all
+    deliveryTimeout: 60s
+    lingerMs: 1_000
+    batchSize: 100_000
+    maxInFlightPerConnection: 5
+    enableIdempotence: true
 
 retry:
   retry-type: exponential
