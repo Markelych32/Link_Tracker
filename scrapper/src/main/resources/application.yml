@@ -7,9 +7,16 @@ app:
   database-access-type: jpa
   kafka:
     bootstrap-server: localhost:29092
-    topic-name: update-message-topic
-    partitions: 2
+    topic-name: link-update
+    partitions: 1
     replications: 1
+    clientId: backend
+    acksMode: all
+    deliveryTimeout: 60s
+    lingerMs: 1_000
+    batchSize: 100_000
+    maxInFlightPerConnection: 5
+    enableIdempotence: true
 
 retry:
   retry-type: exponential
@@ -26,6 +33,15 @@ bucket:
     max-size: 100
     expiration-time: 10
 
+kafka:
+  bootstrapServer: localhost:9092
+  clientId: backend
+  asksMode: all
+  deliveryTimeout: 60s
+  lingerMs: 1_000
+  batchSize: 100_000
+  maxInFlightPerConnection: 5
+  enableIdempotence: true
 
 spring:
   application:

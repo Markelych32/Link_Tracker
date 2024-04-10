@@ -22,7 +22,15 @@ public record ApplicationConfig(
     public record Kafka(@NotNull String bootstrapServer,
                         @NotNull String topicName,
                         @NotNull int partitions,
-                        @NotNull short replications
+                        @NotNull short replications,
+                        @NotNull String clientId,
+                        @NotNull String acksMode,
+                        @NotNull Duration deliveryTimeout,
+                        @NotNull Integer lingerMs,
+                        @NotNull Integer batchSize,
+                        @NotNull Integer maxInFlightPerConnection,
+                        @NotNull Boolean enableIdempotence
+
     ) {
 
     }
