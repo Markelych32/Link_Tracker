@@ -1,8 +1,8 @@
 package edu.java.scrapper.update;
 
-import edu.java.client.BotClient;
 import edu.java.controller.dto.response.LinkUpdate;
 import edu.java.domain.dto.jdbc.Link;
+import edu.java.service.KafkaSenderService;
 import edu.java.service.chat.ChatService;
 import edu.java.service.link.LinkService;
 import edu.java.service.update.StackoverflowUpdater;
@@ -32,7 +32,7 @@ public class StackoverflowUpdaterTest {
     @Mock
     StackOverflowClient stackOverflowClient;
     @Mock
-    BotClient botClient;
+    KafkaSenderService kafkaSenderService;
     @InjectMocks
     StackoverflowUpdater underTest;
 
@@ -75,6 +75,6 @@ public class StackoverflowUpdaterTest {
         when(stackOverflowClient.fetchQuestion(ArgumentMatchers.anyString())).thenReturn(itemResponse);
         underTest.update(link);
         verify(linkService, times(1)).update(ArgumentMatchers.any(Link.class));
-        verify(botClient, times(1)).updateLink(ArgumentMatchers.any(LinkUpdate.class));
+        verify(kafkaSenderService, times(1)).send(ArgumentMatchers.any(LinkUpdate.class));
     }
 }

@@ -5,6 +5,19 @@ app:
     seconds: 60
     force-check-delay: 10s
   database-access-type: jpa
+  useQueue: true
+  kafka:
+    bootstrap-server: localhost:9092
+    topic-name: link-update
+    partitions: 1
+    replications: 1
+    clientId: backend
+    acksMode: all
+    deliveryTimeout: 60s
+    lingerMs: 1_000
+    batchSize: 100_000
+    maxInFlightPerConnection: 5
+    enableIdempotence: true
 
 retry:
   retry-type: exponential
@@ -20,7 +33,6 @@ bucket:
   cache:
     max-size: 100
     expiration-time: 10
-
 
 spring:
   application:

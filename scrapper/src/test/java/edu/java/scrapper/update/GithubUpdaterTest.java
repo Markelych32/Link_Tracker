@@ -5,6 +5,7 @@ import edu.java.controller.dto.response.LinkUpdate;
 import edu.java.domain.dto.jdbc.Link;
 import edu.java.github.GithubClient;
 import edu.java.github.RepositoryResponse;
+import edu.java.service.KafkaSenderService;
 import edu.java.service.chat.ChatService;
 import edu.java.service.link.LinkService;
 import edu.java.service.update.GithubUpdater;
@@ -33,7 +34,7 @@ public class GithubUpdaterTest {
     @Mock
     GithubClient githubClient;
     @Mock
-    BotClient botClient;
+    KafkaSenderService kafkaSenderService;
     @InjectMocks
     GithubUpdater underTest;
 
@@ -77,6 +78,6 @@ public class GithubUpdaterTest {
         when(githubClient.fetchRepository(anyString(), anyString())).thenReturn(repositoryResponse);
         underTest.update(link);
         verify(linkService, times(1)).update(ArgumentMatchers.any(Link.class));
-        verify(botClient, times(1)).updateLink(ArgumentMatchers.any(LinkUpdate.class));
+        verify(kafkaSenderService, times(1)).send(ArgumentMatchers.any(LinkUpdate.class));
     }
 }

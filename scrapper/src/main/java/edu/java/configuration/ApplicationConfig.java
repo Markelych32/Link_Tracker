@@ -9,11 +9,30 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties(prefix = "app")
 public record ApplicationConfig(
     @NotNull
-    Scheduler scheduler
+    Kafka kafka,
+    @NotNull
+    Scheduler scheduler,
+    Boolean useQueue
 ) {
     public record Scheduler(boolean enable,
                             @NotNull Duration interval,
                             @NotNull int seconds,
                             @NotNull Duration forceCheckDelay) {
+    }
+
+    public record Kafka(@NotNull String bootstrapServer,
+                        @NotNull String topicName,
+                        @NotNull int partitions,
+                        @NotNull short replications,
+                        @NotNull String clientId,
+                        @NotNull String acksMode,
+                        @NotNull Duration deliveryTimeout,
+                        @NotNull Integer lingerMs,
+                        @NotNull Integer batchSize,
+                        @NotNull Integer maxInFlightPerConnection,
+                        @NotNull Boolean enableIdempotence
+
+    ) {
+
     }
 }
