@@ -19,12 +19,12 @@ public class KafkaErrorHandler implements CommonErrorHandler {
     @Override
     public boolean handleOne(
         @NotNull Exception thrownException,
-        @NotNull ConsumerRecord<?, ?> record,
+        @NotNull ConsumerRecord<?, ?> consumerRecord,
         @NotNull Consumer<?, ?> consumer,
         @NotNull MessageListenerContainer container
     ) {
         log.error("Invalid link-update message");
-        kafkaTemplate.send("link-updates-dlq", record.value());
+        kafkaTemplate.send("link-updates-dlq", consumerRecord.value());
         return true;
     }
 }

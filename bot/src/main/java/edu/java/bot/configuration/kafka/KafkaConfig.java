@@ -4,6 +4,8 @@ import edu.java.bot.configuration.kafka.properties.KafkaConsumer;
 import edu.java.bot.configuration.kafka.properties.KafkaProducer;
 import edu.java.bot.controller.dto.request.LinkUpdate;
 import edu.java.bot.exception.KafkaErrorHandler;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -22,8 +24,6 @@ import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
-import java.util.HashMap;
-import java.util.Map;
 
 @Configuration
 @EnableKafka
