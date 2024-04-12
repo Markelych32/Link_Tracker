@@ -65,3 +65,27 @@ logging:
 client:
   base-url: ${BOT_CLIENT_BASE_URL}
 
+management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  server:
+    port: 8081
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - prometheus
+          - info
+      base-path: /
+      path-mapping:
+        prometheus: /metrics
+  endpoint:
+    health:
+      enabled: true
+    prometheus:
+      enabled: true
+    info:
+      enabled: true
+
