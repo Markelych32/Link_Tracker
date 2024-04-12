@@ -24,6 +24,11 @@
         <spring-boot.version>3.2.2</spring-boot.version>
         <spring-cloud.version>2023.0.0</spring-cloud.version>
 
+        <!-- Monitoring -->
+        <spring-boot-starter-actuator.version>3.2.4</spring-boot-starter-actuator.version>
+        <micrometer-registry-prometheus.version>1.12.5</micrometer-registry-prometheus.version>
+        <micrometer-tracing-bridge-brave.version>1.2.5</micrometer-tracing-bridge-brave.version>
+
         <!-- Other -->
         <jetbrains-annotations.version>24.1.0</jetbrains-annotations.version>
         <java-telegram-bot-api.version>7.0.1</java-telegram-bot-api.version>
@@ -118,6 +123,24 @@
             <artifactId>junit-jupiter-params</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- Monitoring -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+            <version>${spring-boot-starter-actuator.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>${micrometer-registry-prometheus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing-bridge-brave</artifactId>
+            <version>${micrometer-tracing-bridge-brave.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
