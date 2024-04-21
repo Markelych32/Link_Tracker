@@ -1,5 +1,6 @@
 services:
   postgresql:
+    container_name: postgresql
     image: postgres:16
     ports:
       - "5434:5432"
@@ -13,6 +14,7 @@ services:
       - backend
 
   liquibase-migrations:
+    container_name: liquibase
     image: liquibase/liquibase:4.25
     depends_on:
       - postgresql

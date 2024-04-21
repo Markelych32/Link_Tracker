@@ -7,7 +7,7 @@ app:
   database-access-type: jpa
   useQueue: true
   kafka:
-    bootstrap-server: localhost:9092
+    bootstrap-server: ${KAFKA_LINK}
     topic-name: link-update
     partitions: 1
     replications: 1
@@ -43,7 +43,7 @@ spring:
     password: postgres
     username: postgres
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5434/scrapper
+    url: ${DB_LINK}
   jpa:
     properties:
       hibernate:
