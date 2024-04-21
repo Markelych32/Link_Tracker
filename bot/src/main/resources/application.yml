@@ -4,14 +4,14 @@ app:
 
 kafka:
   consumer:
-    bootstrap-server: localhost:9092
+    bootstrap-server: ${KAFKA_LINK}
     groupId: link-tracker
     autoOffsetReset: latest
     maxPollIntervalMs: 300_000
     enableAutoCommit: false
     concurrency: 1
   producer:
-    bootstrap-server: localhost:9092
+    bootstrap-server: ${KAFKA_LINK}
     clientId: backend
     acksMode: all
     deliveryTimeout: 60s

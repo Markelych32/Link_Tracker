@@ -1,5 +1,40 @@
 services:
+  bot:
+    build:
+      context:
+        /bot/
+    container_name: bot
+    environment:
+      - TELEGRAM_API_KEY=${TELEGRAM_BOT_TOKEN}
+      - KAFKA_LINK=PLAINTEXT://kafka:9092
+      - SCRAPPER_CLIENT_BASE_URL=http://host.docker.internal:8080
+    depends_on:
+      - scrapper
+      - kafka1
+      - zoo1
+    ports:
+      - "8090:8090"
+    networks:
+      - backend
+  scrapper:
+    build:
+      context:
+        /scrapper
+    container_name: scrapper
+    environment:
+      BOT_CLIENT_BASE_URL: http://host.docker.internal:8090
+      DB_LINK: jdbc:postgresql://localhost:5434/scrapper
+    depends_on:
+      - kafka1
+      - zoo1
+      - postgresql
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+
   postgresql:
+    container_name: postgresql
     image: postgres:16
     ports:
       - "5434:5432"
@@ -13,6 +48,7 @@ services:
       - backend
 
   liquibase-migrations:
+    container_name: liquibase
     image: liquibase/liquibase:4.25
     depends_on:
       - postgresql
@@ -98,4 +134,4 @@ volumes:
 
 networks:
   backend: { }
-  grafana: {}
+  grafana: { }
