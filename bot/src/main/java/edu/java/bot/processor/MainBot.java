@@ -9,22 +9,27 @@ import com.pengrad.telegrambot.request.SetMyCommands;
 import com.pengrad.telegrambot.response.BaseResponse;
 import edu.java.bot.command.Command;
 import edu.java.bot.configuration.ApplicationConfig;
+import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class MainBot implements AutoCloseable, UpdatesListener {
     private final ApplicationConfig applicationConfig;
     private final UserMessageProcessor messageProcessor;
     private TelegramBot telegramBot;
     private final List<Command> commands;
+    private final MeterRegistry meterRegistry;
 
     public <T extends BaseRequest<T, R>, R extends BaseResponse> void execute(BaseRequest<T, R> request) {
         telegramBot.execute(request);
+        this.meterRegistry.counter("messages_count", List.of()).increment();
     }
 
     public int process(List<Update> list) {
